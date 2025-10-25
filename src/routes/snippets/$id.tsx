@@ -1,17 +1,25 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
-import { getSnippet } from '../../lib/api/snippets'
+import { deleteSnippet, getSnippet } from '../../lib/api/snippets'
 import { useState, useRef, useEffect } from 'react'
 import type { Snippet } from '../../types/snippet'
 import TagComp from '@/components/snippet/TagComp'
 import VoteButton from '@/components/snippet/VoteButton'
 import DownloadButton from '@/components/snippet/DownloadButton'
+import { useAuth } from '@/hooks/useAuth'
+import { Trash2 } from 'lucide-react'
 
 export const Route = createFileRoute('/snippets/$id')({
   loader: async ({ context, params }) => {
     await context.queryClient.prefetchQuery({
       queryKey: ['snippet', params.id],
       queryFn: () => getSnippet(params.id),
+      retry: (failureCount, error: any) => {
+        if (error?.status >= 400 && error?.status < 500) {
+          return false
+        }
+        return failureCount < 2
+      },
     })
   },
   component: RouteComponent,
@@ -19,15 +27,27 @@ export const Route = createFileRoute('/snippets/$id')({
 
 function RouteComponent() {
   const { id } = Route.useParams()
+  const navigate = useNavigate()
   const {
     data: snippet,
     isLoading,
     isError,
-    error,
   } = useQuery({
     queryKey: ['snippet', id],
     queryFn: () => getSnippet(id),
+    retry: (failureCount, error: any) => {
+      if (error?.status >= 400 && error?.status < 500) {
+        return false
+      }
+      return failureCount < 2
+    },
   })
+
+  useEffect(() => {
+    if (isError) {
+      navigate({ to: '/snippets' })
+    }
+  }, [isError, navigate])
 
   if (isLoading) {
     return (
@@ -42,15 +62,10 @@ function RouteComponent() {
 
   if (isError) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <p className="text-red-600">Error: {error?.message}</p>
-          <Link
-            to="/snippets"
-            className="text-blue-600 hover:underline mt-4 inline-block"
-          >
-            Back to snippets
-          </Link>
+          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600"></div>
+          <p className="text-sm text-gray-600">Redirecting...</p>
         </div>
       </div>
     )
@@ -72,6 +87,7 @@ function SnippetView({ snippet }: { snippet: Snippet }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const svgRef = useRef<HTMLDivElement>(null)
   const objectRef = useRef<HTMLObjectElement>(null)
+  const { user } = useAuth()
 
   useEffect(() => {
     const fitToContainer = () => {
@@ -461,29 +477,53 @@ function SnippetView({ snippet }: { snippet: Snippet }) {
         >
           ← Back to snippets
         </Link>
-        <div className="flex items-center gap-1 rounded-md border border-gray-300 bg-gray-50 p-0.5 dark:border-gray-600 dark:bg-gray-700">
-          <button
-            type="button"
-            onClick={() => handleViewModeChange('split')}
-            className={`rounded px-2 py-1 text-xs font-medium transition-all ${
-              viewMode === 'split'
-                ? 'bg-white text-gray-900 shadow-sm dark:bg-gray-600 dark:text-gray-100'
-                : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200'
-            }`}
-          >
-            Split
-          </button>
-          <button
-            type="button"
-            onClick={() => handleViewModeChange('stacked')}
-            className={`rounded px-2 py-1 text-xs font-medium transition-all ${
-              viewMode === 'stacked'
-                ? 'bg-white text-gray-900 shadow-sm dark:bg-gray-600 dark:text-gray-100'
-                : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200'
-            }`}
-          >
-            Stacked
-          </button>
+        <div className="flex items-center gap-3">
+          <div className="rounded-md border border-gray-300 bg-gray-50 p-0.5 dark:border-gray-600 dark:bg-gray-700">
+            <button
+              type="button"
+              onClick={() => handleViewModeChange('split')}
+              className={`rounded px-2 py-1 text-xs font-medium transition-all ${
+                viewMode === 'split'
+                  ? 'bg-white text-gray-900 shadow-sm dark:bg-gray-600 dark:text-gray-100'
+                  : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200'
+              }`}
+            >
+              Split
+            </button>
+            <button
+              type="button"
+              onClick={() => handleViewModeChange('stacked')}
+              className={`rounded px-2 py-1 text-xs font-medium transition-all ${
+                viewMode === 'stacked'
+                  ? 'bg-white text-gray-900 shadow-sm dark:bg-gray-600 dark:text-gray-100'
+                  : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200'
+              }`}
+            >
+              Stacked
+            </button>
+          </div>
+          {snippet.createdBy?.id == user?.id && (
+            <>
+              <div>
+                <button
+                  className="flex items-center gap-1 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200 text-sm cursor-pointer"
+                  onClick={() => {
+                    if (
+                      confirm(
+                        'Are you sure you want to delete this snippet? This action cannot be undone.',
+                      )
+                    ) {
+                      deleteSnippet(snippet.id).then(() => {
+                        window.location.href = '/snippets'
+                      })
+                    }
+                  }}
+                >
+                  <Trash2 />
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
 

@@ -87,7 +87,11 @@ export async function getSnippet(id: string) {
   })
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch snippet: ${response.statusText}`)
+    const error: any = new Error(
+      `Failed to fetch snippet: ${response.statusText}`,
+    )
+    error.status = response.status
+    throw error
   }
 
   return response.json()
@@ -107,5 +111,18 @@ export async function voteSnippet(id: string, vote: boolean): Promise<void> {
 
   if (!response.ok) {
     throw new Error(`Failed to vote snippet: ${response.statusText}`)
+  }
+}
+
+export async function deleteSnippet(id: string): Promise<void> {
+  const url = new URL(getApiUrl(`/snippets/${id}/delete`))
+
+  const response = await fetch(url.toString(), {
+    method: 'DELETE',
+    credentials: 'include',
+  })
+
+  if (!response.ok) {
+    throw new Error(`Failed to delete snippet: ${response.statusText}`)
   }
 }

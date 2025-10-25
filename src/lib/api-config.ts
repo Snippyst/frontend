@@ -1,5 +1,5 @@
 export const API_CONFIG = {
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3333/v1',
+  baseURL: import.meta.env.VITE_API_URL || 'https://api.snippyst.com/v1',
 } as const
 
 export function getApiUrl(path: string): string {
