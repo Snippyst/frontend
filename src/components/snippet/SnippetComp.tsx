@@ -26,7 +26,7 @@ export default function SnippetComp({ snippet }: { snippet: Snippet }) {
             <div>{snippet.title}</div>
             <div className="flex items-center gap-2">
               <VoteButton
-                snippetId={snippet.id}
+                snippet={snippet}
                 initialUpvotes={snippet.numberOfUpvotes ?? 0}
                 initialIsUpvoted={snippet.isUpvoted ?? false}
               />
