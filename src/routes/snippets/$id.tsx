@@ -33,7 +33,8 @@ export const Route = createFileRoute('/snippets/$id')({
         meta: generateSEOMeta({
           title: 'Snippet - Snippyst',
           description: 'View Typst snippets on Snippyst',
-          image: 'https://snippyst.com/og-image.png',
+          // TODO Better placeholder image
+          // image: 'https://snippyst.com/og-image.png',
           url: `https://snippyst.com/snippets/${params.id}`,
         }),
       }
@@ -48,7 +49,7 @@ export const Route = createFileRoute('/snippets/$id')({
       meta: generateSEOMeta({
         title: `${snippet.title} - Snippyst`,
         description,
-        image: snippet.image,
+        image: snippet.image + '/preview',
         url: `https://snippyst.com/snippets/${params.id}`,
       }),
     }

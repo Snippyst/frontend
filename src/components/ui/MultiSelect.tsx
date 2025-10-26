@@ -5,6 +5,7 @@ export interface MultiSelectItem {
   id: string
   name: string
   count?: number
+  description?: string
 }
 
 export interface MultiSelectProps<T extends MultiSelectItem> {
@@ -104,6 +105,11 @@ export default function MultiSelect<T extends MultiSelectItem>({
         }`}
       >
         <div className="font-medium">{item.name}</div>
+        {item.description && (
+          <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2">
+            {item.description}
+          </div>
+        )}
       </button>
       <hr className="border-t border-gray-200 dark:border-gray-600" />
     </>

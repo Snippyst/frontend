@@ -18,7 +18,6 @@ export default function TagComp({ tag }: { tag: Tag }) {
 
   return (
     <>
-      {/* TODO fix this. Probablyneeds to be completley rewritten */}
       <Link to="/snippets" search={{ tags: [tag.id] }}>
         <div
           key={tag.id}

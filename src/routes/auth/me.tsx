@@ -1,5 +1,5 @@
 import { useAuth } from '@/hooks/useAuth'
-import { deleteAccount, logout } from '@/lib/api/auth'
+import { deleteAccount } from '@/lib/api/auth'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/auth/me')({
@@ -7,7 +7,7 @@ export const Route = createFileRoute('/auth/me')({
 })
 
 function RouteComponent() {
-  const { user, isAuthenticated, refetchUser } = useAuth()
+  const { user, isAuthenticated, refetchUser, logout } = useAuth()
   const navigate = Route.useNavigate()
 
   if (!user && !isAuthenticated) {

@@ -1,21 +1,21 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
+import {
+  keepPreviousData,
+  useInfiniteQuery,
+  useQuery,
+} from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
 import { getSnippets } from '../../lib/api/snippets'
-import { getTags } from '../../lib/api/tags'
+import { getTags, getTagsByIds } from '../../lib/api/tags'
 import type { Snippet, SnippetsResponse } from '../../types/snippet'
 import type { Tag } from '../../types/tags'
 import SnippetComp from '@/components/snippet/SnippetComp'
+import SkeletonCard from '@/components/snippet/SkeletonCard'
 import MultiSelect from '@/components/ui/MultiSelect'
 import { z } from 'zod'
 
-const tagSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-})
-
 const snippetsSearchSchema = z.object({
-  tags: z.array(tagSchema).optional().default([]),
+  tags: z.array(z.string()).optional().default([]),
 })
 
 export const Route = createFileRoute('/snippets/')({
@@ -41,11 +41,18 @@ export const Route = createFileRoute('/snippets/')({
 
 function RouteComponent() {
   const navigate = Route.useNavigate()
-  const { tags: selectedTags = [] } = Route.useSearch()
+  const { tags: selectedTagIds = [] } = Route.useSearch()
   const [searchQuery, setSearchQuery] = useState('')
   const observerTarget = useRef<HTMLDivElement>(null)
 
-  const selectedTagIds = selectedTags.map((tag) => tag.id)
+  const { data: selectedTagsData } = useQuery({
+    queryKey: ['tags', 'byIds', selectedTagIds],
+    queryFn: () => getTagsByIds(selectedTagIds),
+    enabled: selectedTagIds.length > 0,
+    placeholderData: keepPreviousData,
+  })
+
+  const selectedTags = selectedTagIds.length > 0 ? (selectedTagsData ?? []) : []
 
   const {
     data,
@@ -53,6 +60,7 @@ function RouteComponent() {
     hasNextPage,
     isFetchingNextPage,
     isLoading,
+    isPlaceholderData,
     isError,
     error,
   } = useInfiniteQuery({
@@ -65,11 +73,13 @@ function RouteComponent() {
         ? lastPage.meta.currentPage + 1
         : undefined
     },
+    placeholderData: keepPreviousData,
   })
 
   const { data: tagsData, isLoading: tagsLoading } = useQuery({
     queryKey: ['tags', searchQuery],
     queryFn: () => getTags({ page: 1, perPage: 100, search: searchQuery }),
+    placeholderData: keepPreviousData,
   })
 
   useEffect(() => {
@@ -89,14 +99,6 @@ function RouteComponent() {
     return () => observer.disconnect()
   }, [hasNextPage, isFetchingNextPage, fetchNextPage])
 
-  if (isLoading) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">Loading snippets...</div>
-      </div>
-    )
-  }
-
   if (isError) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -115,7 +117,7 @@ function RouteComponent() {
     navigate({
       to: '/snippets',
       search: {
-        tags: newSelectedTags.map((tag) => ({ id: tag.id, name: tag.name })),
+        tags: newSelectedTags.map((tag) => tag.id),
       },
     })
   }
@@ -128,11 +130,13 @@ function RouteComponent() {
     id: tag.id,
     name: tag.name,
     count: tag.numberOfSnippets,
+    description: tag.description,
   }))
 
   const multiSelectSelectedTags = selectedTags.map((tag) => ({
     id: tag.id,
     name: tag.name,
+    description: tag.description,
   }))
 
   return (
@@ -152,24 +156,47 @@ function RouteComponent() {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {allSnippets.map((snippet: Snippet) => (
-          <SnippetComp snippet={snippet} key={snippet.id} />
-        ))}
-      </div>
-
-      <div ref={observerTarget} className="mt-8 text-center text-gray-600">
-        {isFetchingNextPage ? (
-          <div className="py-4">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-            <p className="mt-2">Loading more snippets...</p>
+      {isLoading && allSnippets.length === 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <SkeletonCard key={index} />
+          ))}
+        </div>
+      ) : (
+        <>
+          <div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            style={{
+              opacity: isPlaceholderData ? 0.6 : 1,
+              transition: 'opacity 0.2s',
+            }}
+          >
+            {allSnippets.map((snippet: Snippet) => (
+              <SnippetComp snippet={snippet} key={snippet.id} />
+            ))}
           </div>
-        ) : hasNextPage ? (
-          <p className="py-4">Scroll down to load more...</p>
-        ) : (
-          <p className="py-4">No more snippets to load.</p>
-        )}
-      </div>
+
+          {isFetchingNextPage && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <SkeletonCard key={`skeleton-${index}`} />
+              ))}
+            </div>
+          )}
+
+          <div ref={observerTarget} className="mt-8 text-center text-gray-600">
+            {isFetchingNextPage ? (
+              <p className="py-4">Loading more snippets...</p>
+            ) : hasNextPage ? (
+              <p className="py-4">Scroll down to load more...</p>
+            ) : allSnippets.length > 0 ? (
+              <p className="py-4">No more snippets to load.</p>
+            ) : (
+              <p className="py-4">No snippets found.</p>
+            )}
+          </div>
+        </>
+      )}
     </div>
   )
 }

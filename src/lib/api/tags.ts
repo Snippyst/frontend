@@ -52,3 +52,23 @@ export async function createTag(data: CreateTagData): Promise<Tag> {
 
   return response.json()
 }
+
+export async function getTagsByIds(ids: string[]): Promise<Tag[]> {
+  if (ids.length === 0) {
+    return []
+  }
+
+  const response = await fetch(getApiUrl('/tags/multiple'), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ ids }),
+  })
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch tags: ${response.statusText}`)
+  }
+
+  return response.json()
+}
