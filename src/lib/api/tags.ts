@@ -1,5 +1,5 @@
 import { getApiUrl } from '../api-config'
-import type { TagResponse } from '../../types/tags'
+import type { TagResponse, Tag } from '../../types/tags'
 
 export interface GetTagsParams {
   page?: number
@@ -23,6 +23,31 @@ export async function getTags(
 
   if (!response.ok) {
     throw new Error(`Failed to fetch tags: ${response.statusText}`)
+  }
+
+  return response.json()
+}
+
+export interface CreateTagData {
+  name: string
+  description?: string
+}
+
+export async function createTag(data: CreateTagData): Promise<Tag> {
+  const response = await fetch(getApiUrl('/tags/create'), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify(data),
+  })
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}))
+    throw new Error(
+      error.message || `Failed to create tag: ${response.statusText}`,
+    )
   }
 
   return response.json()

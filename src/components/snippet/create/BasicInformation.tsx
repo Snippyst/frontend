@@ -7,6 +7,7 @@ interface BasicInformationProps {
   availableTags: Tag[]
   loadingTags: boolean
   onTagSearch: (search: string) => void
+  onCreateTag?: () => void
 }
 
 export function BasicInformation({
@@ -14,6 +15,7 @@ export function BasicInformation({
   availableTags,
   loadingTags,
   onTagSearch,
+  onCreateTag,
 }: BasicInformationProps) {
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800">
@@ -83,6 +85,8 @@ export function BasicInformation({
                 isLoading={loadingTags}
                 onSearch={onTagSearch}
                 showDropdown={true}
+                onCreateNew={onCreateTag}
+                createNewLabel="Create new tag"
               />
             </div>
           )}

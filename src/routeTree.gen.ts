@@ -13,6 +13,7 @@ import { Route as TosRouteImport } from './routes/tos'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SnippetsIndexRouteImport } from './routes/snippets/index'
+import { Route as TagsNewRouteImport } from './routes/tags/new'
 import { Route as SnippetsNewRouteImport } from './routes/snippets/new'
 import { Route as SnippetsIdRouteImport } from './routes/snippets/$id'
 import { Route as AuthMeRouteImport } from './routes/auth/me'
@@ -37,6 +38,11 @@ const IndexRoute = IndexRouteImport.update({
 const SnippetsIndexRoute = SnippetsIndexRouteImport.update({
   id: '/snippets/',
   path: '/snippets/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TagsNewRoute = TagsNewRouteImport.update({
+  id: '/tags/new',
+  path: '/tags/new',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SnippetsNewRoute = SnippetsNewRouteImport.update({
@@ -73,6 +79,7 @@ export interface FileRoutesByFullPath {
   '/auth/me': typeof AuthMeRoute
   '/snippets/$id': typeof SnippetsIdRoute
   '/snippets/new': typeof SnippetsNewRoute
+  '/tags/new': typeof TagsNewRoute
   '/snippets': typeof SnippetsIndexRoute
   '/auth/$provider/callback': typeof AuthProviderCallbackRoute
 }
@@ -84,6 +91,7 @@ export interface FileRoutesByTo {
   '/auth/me': typeof AuthMeRoute
   '/snippets/$id': typeof SnippetsIdRoute
   '/snippets/new': typeof SnippetsNewRoute
+  '/tags/new': typeof TagsNewRoute
   '/snippets': typeof SnippetsIndexRoute
   '/auth/$provider/callback': typeof AuthProviderCallbackRoute
 }
@@ -96,6 +104,7 @@ export interface FileRoutesById {
   '/auth/me': typeof AuthMeRoute
   '/snippets/$id': typeof SnippetsIdRoute
   '/snippets/new': typeof SnippetsNewRoute
+  '/tags/new': typeof TagsNewRoute
   '/snippets/': typeof SnippetsIndexRoute
   '/auth/$provider/callback': typeof AuthProviderCallbackRoute
 }
@@ -109,6 +118,7 @@ export interface FileRouteTypes {
     | '/auth/me'
     | '/snippets/$id'
     | '/snippets/new'
+    | '/tags/new'
     | '/snippets'
     | '/auth/$provider/callback'
   fileRoutesByTo: FileRoutesByTo
@@ -120,6 +130,7 @@ export interface FileRouteTypes {
     | '/auth/me'
     | '/snippets/$id'
     | '/snippets/new'
+    | '/tags/new'
     | '/snippets'
     | '/auth/$provider/callback'
   id:
@@ -131,6 +142,7 @@ export interface FileRouteTypes {
     | '/auth/me'
     | '/snippets/$id'
     | '/snippets/new'
+    | '/tags/new'
     | '/snippets/'
     | '/auth/$provider/callback'
   fileRoutesById: FileRoutesById
@@ -143,6 +155,7 @@ export interface RootRouteChildren {
   AuthMeRoute: typeof AuthMeRoute
   SnippetsIdRoute: typeof SnippetsIdRoute
   SnippetsNewRoute: typeof SnippetsNewRoute
+  TagsNewRoute: typeof TagsNewRoute
   SnippetsIndexRoute: typeof SnippetsIndexRoute
   AuthProviderCallbackRoute: typeof AuthProviderCallbackRoute
 }
@@ -175,6 +188,13 @@ declare module '@tanstack/react-router' {
       path: '/snippets'
       fullPath: '/snippets'
       preLoaderRoute: typeof SnippetsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tags/new': {
+      id: '/tags/new'
+      path: '/tags/new'
+      fullPath: '/tags/new'
+      preLoaderRoute: typeof TagsNewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/snippets/new': {
@@ -223,6 +243,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthMeRoute: AuthMeRoute,
   SnippetsIdRoute: SnippetsIdRoute,
   SnippetsNewRoute: SnippetsNewRoute,
+  TagsNewRoute: TagsNewRoute,
   SnippetsIndexRoute: SnippetsIndexRoute,
   AuthProviderCallbackRoute: AuthProviderCallbackRoute,
 }

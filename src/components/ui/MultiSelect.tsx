@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { X } from 'lucide-react'
+import { X, Plus } from 'lucide-react'
 
 export interface MultiSelectItem {
   id: string
@@ -18,6 +18,8 @@ export interface MultiSelectProps<T extends MultiSelectItem> {
   onSearch?: (query: string) => void
   renderItem?: (item: T, isSelected: boolean) => React.ReactNode
   showDropdown?: boolean
+  onCreateNew?: () => void
+  createNewLabel?: string
 }
 
 export default function MultiSelect<T extends MultiSelectItem>({
@@ -31,6 +33,8 @@ export default function MultiSelect<T extends MultiSelectItem>({
   onSearch,
   renderItem,
   showDropdown = false,
+  onCreateNew,
+  createNewLabel = 'Create new',
 }: MultiSelectProps<T>) {
   const [searchQuery, setSearchQuery] = useState('')
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -81,25 +85,28 @@ export default function MultiSelect<T extends MultiSelectItem>({
   )
 
   const dropdownRenderItem = (item: T, isSelected: boolean) => (
-    <button
-      key={item.id}
-      type="button"
-      onClick={() => {
-        if (!isSelected) {
-          toggleItem(item)
-        }
-        setSearchQuery('')
-        setIsDropdownOpen(false)
-      }}
-      disabled={isSelected}
-      className={`w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-600 ${
-        isSelected
-          ? 'cursor-not-allowed bg-gray-50 text-gray-400 dark:bg-gray-800 dark:text-gray-500'
-          : 'text-gray-900 dark:text-gray-100'
-      }`}
-    >
-      <div className="font-medium">{item.name}</div>
-    </button>
+    <>
+      <button
+        key={item.id}
+        type="button"
+        onClick={() => {
+          if (!isSelected) {
+            toggleItem(item)
+          }
+          setSearchQuery('')
+          setIsDropdownOpen(false)
+        }}
+        disabled={isSelected}
+        className={`w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-600 ${
+          isSelected
+            ? 'cursor-not-allowed bg-gray-50 text-gray-400 dark:bg-gray-800 dark:text-gray-500'
+            : 'text-gray-900 dark:text-gray-100'
+        }`}
+      >
+        <div className="font-medium">{item.name}</div>
+      </button>
+      <hr className="border-t border-gray-200 dark:border-gray-600" />
+    </>
   )
 
   if (showDropdown) {
@@ -138,7 +145,7 @@ export default function MultiSelect<T extends MultiSelectItem>({
             onBlur={() => {
               setTimeout(() => setIsDropdownOpen(false), 200)
             }}
-            className="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:focus:border-blue-400 dark:focus:ring-blue-400"
+            className="mt-1.5 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:border-blue-400 dark:focus:ring-blue-400"
             placeholder={searchPlaceholder}
           />
           {isDropdownOpen && (
@@ -148,16 +155,48 @@ export default function MultiSelect<T extends MultiSelectItem>({
                   Loading...
                 </div>
               ) : items.length === 0 ? (
-                <div className="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">
-                  {placeholder}
+                <div>
+                  {onCreateNew && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onCreateNew()
+                        setIsDropdownOpen(false)
+                      }}
+                      className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-600 text-blue-600 dark:text-blue-400 font-medium flex items-center gap-2"
+                    >
+                      <Plus className="h-4 w-4" />
+                      {createNewLabel}
+                    </button>
+                  )}
+                  {!onCreateNew && (
+                    <div className="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">
+                      {placeholder}
+                    </div>
+                  )}
                 </div>
               ) : (
-                items.map((item) => {
-                  const isSelected = selectedItems.some(
-                    (selected) => selected.id === item.id,
-                  )
-                  return dropdownRenderItem(item, isSelected)
-                })
+                <>
+                  {items.map((item) => {
+                    const isSelected = selectedItems.some(
+                      (selected) => selected.id === item.id,
+                    )
+                    return dropdownRenderItem(item, isSelected)
+                  })}
+                  {onCreateNew && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onCreateNew()
+                        setIsDropdownOpen(false)
+                      }}
+                      className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-600 text-blue-600 dark:text-blue-400 font-medium flex items-center gap-2 border-b border-gray-200 dark:border-gray-600"
+                    >
+                      <Plus className="h-4 w-4" />
+                      {createNewLabel}
+                    </button>
+                  )}
+                </>
               )}
             </div>
           )}
@@ -199,7 +238,7 @@ export default function MultiSelect<T extends MultiSelectItem>({
             value={searchQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
             placeholder={searchPlaceholder}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="mt-1.5 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:border-blue-400 dark:focus:ring-blue-400"
           />
         </div>
       )}

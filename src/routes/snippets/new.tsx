@@ -120,6 +120,7 @@ function RouteComponent() {
           availableTags={availableTags}
           loadingTags={loadingTags}
           onTagSearch={setTagSearch}
+          onCreateTag={() => navigate({ to: '/tags/new' })}
         />
 
         <CodeEditorSection
