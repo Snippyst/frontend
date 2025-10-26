@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSnippetZoom } from '@/hooks/useSnippetZoom'
-import DownloadButton from './DownloadButton'
+import DownloadButton from '../DownloadButton'
 import type { Snippet } from '@/types/snippet'
 
 interface SnippetPreviewProps {
@@ -170,7 +170,6 @@ export default function SnippetPreview({
           </object>
         </div>
       </div>
-      {/* Resize handle */}
       <div
         onMouseDown={handleResizeStart}
         className="absolute bottom-0 right-0 w-4 h-4

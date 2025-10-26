@@ -1,5 +1,5 @@
-import TagComp from './TagComp'
-import VoteButton from './VoteButton'
+import TagComp from '../TagComp'
+import VoteButton from '../VoteButton'
 import type { Snippet } from '@/types/snippet'
 
 interface SnippetInfoProps {
