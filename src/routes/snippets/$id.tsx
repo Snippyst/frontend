@@ -10,10 +10,11 @@ import SnippetInfo from '@/components/snippet/show/SnippetInfo'
 import SnippetCode from '@/components/snippet/show/SnippetCode'
 import ViewModeToggle from '@/components/snippet/show/ViewModeToggle'
 import DeleteButton from '@/components/snippet/DeleteButton'
+import { generateSEOMeta } from '@/components/SEO'
 
 export const Route = createFileRoute('/snippets/$id')({
   loader: async ({ context, params }) => {
-    await context.queryClient.prefetchQuery({
+    return await context.queryClient.fetchQuery({
       queryKey: ['snippet', params.id],
       queryFn: () => getSnippet(params.id),
       retry: (failureCount, error: any) => {
@@ -23,6 +24,34 @@ export const Route = createFileRoute('/snippets/$id')({
         return failureCount < 2
       },
     })
+  },
+  head: ({ loaderData, params }) => {
+    const snippet = loaderData as any
+
+    if (!snippet) {
+      return {
+        meta: generateSEOMeta({
+          title: 'Snippet - Snippyst',
+          description: 'View Typst snippets on Snippyst',
+          image: 'https://snippyst.com/og-image.png',
+          url: `https://snippyst.com/snippets/${params.id}`,
+        }),
+      }
+    }
+
+    const author = snippet.author || snippet.createdBy?.username || 'Unknown'
+    const description = snippet.description
+      ? `By ${author}. ${snippet.description}`
+      : `By ${author}. A Typst snippet on Snippyst.`
+
+    return {
+      meta: generateSEOMeta({
+        title: `${snippet.title} - Snippyst`,
+        description,
+        image: snippet.image,
+        url: `https://snippyst.com/snippets/${params.id}`,
+      }),
+    }
   },
   component: RouteComponent,
 })
