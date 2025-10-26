@@ -1,13 +1,13 @@
 import { AlertCircle } from 'lucide-react'
 
 interface SubmitSectionProps {
-  isSubmitting: boolean
+  form: any
   submitError: string | null
   onCancel: () => void
 }
 
 export function SubmitSection({
-  isSubmitting,
+  form,
   submitError,
   onCancel,
 }: SubmitSectionProps) {
@@ -44,23 +44,28 @@ export function SubmitSection({
           </p>
         </div>
 
-        <div className="flex justify-end gap-3">
-          <button
-            type="button"
-            onClick={onCancel}
-            disabled={isSubmitting}
-            className="rounded-md border border-gray-300 bg-white px-5 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:focus:ring-blue-400 dark:focus:ring-offset-gray-900"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="rounded-md border border-transparent bg-blue-600 px-5 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-400 dark:focus:ring-offset-gray-900"
-          >
-            {isSubmitting ? 'Uploading and compiling...' : 'Create Snippet'}
-          </button>
-        </div>
+        <form.Subscribe
+          selector={(state: any) => [state.canSubmit, state.isSubmitting]}
+          children={([canSubmit, isSubmitting]: [boolean, boolean]) => (
+            <div className="flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={onCancel}
+                disabled={isSubmitting}
+                className="rounded-md border border-gray-300 bg-white px-5 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:focus:ring-blue-400 dark:focus:ring-offset-gray-900"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={!canSubmit || isSubmitting}
+                className="rounded-md border border-transparent bg-blue-600 px-5 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-400 dark:focus:ring-offset-gray-900"
+              >
+                {isSubmitting ? 'Uploading and compiling...' : 'Create Snippet'}
+              </button>
+            </div>
+          )}
+        />
       </div>
     </>
   )

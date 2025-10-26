@@ -33,3 +33,6 @@ export type { SpinnerProps } from './Spinner'
 
 export { Link } from './Link'
 export type { LinkProps } from './Link'
+
+export { default as MultiSelect } from './MultiSelect'
+export type { MultiSelectItem, MultiSelectProps } from './MultiSelect'
