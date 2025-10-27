@@ -5,9 +5,16 @@ export interface GetSnippetsParams {
   page?: number
   perPage?: number
   tags?: string[]
-  search?: string
-  sortBy?: 'createdAt' | 'updatedAt' | 'title'
+  userId?: string
+  packages?: Array<{
+    namespace: string
+    name: string
+    version?: string
+  }>
+  versions?: string[]
+  sortBy?: 'createdAt' | 'updatedAt' | 'numberOfUpvotes'
   sortOrder?: 'asc' | 'desc'
+  search?: string
 }
 
 export interface CreateSnippetParams {
@@ -24,6 +31,64 @@ export interface CreateSnippetParams {
   author?: string
 }
 
+export interface SearchSuggestionsResponse {
+  suggestions: string[]
+}
+
+export async function getSearchSuggestions(
+  params: Omit<GetSnippetsParams, 'page' | 'perPage'> = {},
+): Promise<SearchSuggestionsResponse> {
+  const { tags = [] } = params
+
+  const url = new URL(getApiUrl('/snippets/suggest'))
+
+  if (tags.length > 0) {
+    tags.forEach((tag) => url.searchParams.append('tags[]', tag))
+  }
+
+  if (params.userId) {
+    url.searchParams.set('userId', params.userId)
+  }
+
+  if (params.packages && params.packages.length > 0) {
+    params.packages.forEach((pkg) => {
+      url.searchParams.append('packages[][namespace]', pkg.namespace)
+      url.searchParams.append('packages[][name]', pkg.name)
+      if (pkg.version) {
+        url.searchParams.append('packages[][version]', pkg.version)
+      }
+    })
+  }
+
+  if (params.versions && params.versions.length > 0) {
+    params.versions.forEach((version) => {
+      url.searchParams.append('versions[]', version)
+    })
+  }
+
+  if (params.search) {
+    url.searchParams.set('search', params.search)
+  }
+
+  if (params.sortBy) {
+    url.searchParams.set('sortBy', params.sortBy)
+  }
+
+  if (params.sortOrder) {
+    url.searchParams.set('sortOrder', params.sortOrder)
+  }
+
+  const response = await fetch(url.toString(), {
+    credentials: 'include',
+  })
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch suggestions: ${response.statusText}`)
+  }
+
+  return response.json()
+}
+
 export async function getSnippets(
   params: GetSnippetsParams = {},
 ): Promise<SnippetsResponse> {
@@ -31,16 +96,40 @@ export async function getSnippets(
 
   const url = new URL(getApiUrl('/snippets'))
   url.searchParams.set('page', String(page))
-  url.searchParams.set('perPage', String(perPage))
+  url.searchParams.set('limit', String(perPage))
+
   if (tags.length > 0) {
     tags.forEach((tag) => url.searchParams.append('tags[]', tag))
   }
+
+  if (params.userId) {
+    url.searchParams.set('userId', params.userId)
+  }
+
+  if (params.packages && params.packages.length > 0) {
+    params.packages.forEach((pkg) => {
+      url.searchParams.append('packages[][namespace]', pkg.namespace)
+      url.searchParams.append('packages[][name]', pkg.name)
+      if (pkg.version) {
+        url.searchParams.append('packages[][version]', pkg.version)
+      }
+    })
+  }
+
+  if (params.versions && params.versions.length > 0) {
+    params.versions.forEach((version) => {
+      url.searchParams.append('versions[]', version)
+    })
+  }
+
   if (params.search) {
     url.searchParams.set('search', params.search)
   }
+
   if (params.sortBy) {
     url.searchParams.set('sortBy', params.sortBy)
   }
+
   if (params.sortOrder) {
     url.searchParams.set('sortOrder', params.sortOrder)
   }

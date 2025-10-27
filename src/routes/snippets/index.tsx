@@ -6,53 +6,133 @@ import {
 } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
 import { getSnippets } from '../../lib/api/snippets'
-import { getTags, getTagsByIds } from '../../lib/api/tags'
-import type { Snippet, SnippetsResponse } from '../../types/snippet'
-import type { Tag } from '../../types/tags'
+import { getTagsByIds } from '../../lib/api/tags'
+import { getUsers } from '../../lib/api/users'
+import type { Snippet } from '../../types/snippet'
+import type { SearchToken } from '../../types/search'
 import SnippetComp from '@/components/snippet/SnippetComp'
 import SkeletonCard from '@/components/snippet/SkeletonCard'
-import MultiSelect from '@/components/ui/MultiSelect'
+import SearchInput from '@/components/snippet/SearchInput'
 import { z } from 'zod'
+import {
+  buildSnippetsParams,
+  tokensToSearchParams,
+  searchParamsToTokens,
+} from '@/lib/search-utils'
 
 const snippetsSearchSchema = z.object({
   tags: z.array(z.string()).optional().default([]),
+  userId: z.string().optional(),
+  packages: z.string().optional(),
+  versions: z.array(z.string()).optional().default([]),
+  search: z.string().optional(),
+  sortBy: z
+    .enum(['createdAt', 'updatedAt', 'numberOfUpvotes'])
+    .optional()
+    .default('createdAt'),
+  sortOrder: z.enum(['asc', 'desc']).optional().default('desc'),
 })
 
 export const Route = createFileRoute('/snippets/')({
   validateSearch: snippetsSearchSchema,
-  loader: async ({ context }) => {
-    await context.queryClient.prefetchInfiniteQuery({
-      queryKey: ['snippets'],
-      queryFn: ({ pageParam }) => getSnippets({ page: pageParam, perPage: 10 }),
-      initialPageParam: 1,
-      getNextPageParam: (lastPage: SnippetsResponse) => {
-        return lastPage.meta.currentPage < lastPage.meta.lastPage
-          ? lastPage.meta.currentPage + 1
-          : undefined
-      },
-    })
-    await context.queryClient.prefetchQuery({
-      queryKey: ['tags'],
-      queryFn: () => getTags({ page: 1, perPage: 100 }),
-    })
-  },
   component: RouteComponent,
 })
 
 function RouteComponent() {
   const navigate = Route.useNavigate()
-  const { tags: selectedTagIds = [] } = Route.useSearch()
-  const [searchQuery, setSearchQuery] = useState('')
+  const searchParams = Route.useSearch()
   const observerTarget = useRef<HTMLDivElement>(null)
 
+  const {
+    tokens: initialTokens,
+    textSearch: initialTextSearch,
+    sortBy: initialSortBy,
+    sortOrder: initialSortOrder,
+  } = searchParamsToTokens(searchParams)
+
+  const [tokens, setTokens] = useState<SearchToken[]>(initialTokens)
+  const [inputValue, setInputValue] = useState(initialTextSearch)
+  const [textSearch, setTextSearch] = useState(initialTextSearch)
+  const [sortBy, setSortBy] = useState<
+    'createdAt' | 'updatedAt' | 'numberOfUpvotes'
+  >(
+    (initialSortBy as 'createdAt' | 'updatedAt' | 'numberOfUpvotes') ||
+      'createdAt',
+  )
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(
+    (initialSortOrder as 'asc' | 'desc') || 'desc',
+  )
+
   const { data: selectedTagsData } = useQuery({
-    queryKey: ['tags', 'byIds', selectedTagIds],
-    queryFn: () => getTagsByIds(selectedTagIds),
-    enabled: selectedTagIds.length > 0,
-    placeholderData: keepPreviousData,
+    queryKey: [
+      'tags',
+      'byIds',
+      tokens.filter((t) => t.type === 'tag').map((t) => t.value),
+    ],
+    queryFn: () =>
+      getTagsByIds(tokens.filter((t) => t.type === 'tag').map((t) => t.value)),
+    enabled: tokens.some((t) => t.type === 'tag'),
   })
 
-  const selectedTags = selectedTagIds.length > 0 ? (selectedTagsData ?? []) : []
+  const { data: selectedUsersData } = useQuery({
+    queryKey: [
+      'users',
+      'byIds',
+      tokens.filter((t) => t.type === 'user').map((t) => t.value),
+    ],
+    queryFn: () =>
+      getUsers({
+        search: tokens.find((t) => t.type === 'user')?.value,
+      }),
+    enabled: tokens.some((t) => t.type === 'user'),
+  })
+
+  useEffect(() => {
+    if (selectedTagsData) {
+      setTokens((prevTokens) =>
+        prevTokens.map((token) => {
+          if (token.type === 'tag') {
+            const tag = selectedTagsData.find((t) => t.id === token.value)
+            if (tag) {
+              return {
+                ...token,
+                displayValue: tag.name,
+                metadata: { ...token.metadata, tag },
+              }
+            }
+          }
+          return token
+        }),
+      )
+    }
+  }, [selectedTagsData])
+
+  useEffect(() => {
+    if (selectedUsersData) {
+      setTokens((prevTokens) =>
+        prevTokens.map((token) => {
+          if (token.type === 'user') {
+            const user = selectedUsersData.find((u) => u.id === token.value)
+            if (user) {
+              return {
+                ...token,
+                displayValue: user.username,
+                metadata: { ...token.metadata, user },
+              }
+            }
+          }
+          return token
+        }),
+      )
+    }
+  }, [selectedUsersData])
+
+  const snippetsParams = buildSnippetsParams(
+    tokens,
+    textSearch,
+    sortBy,
+    sortOrder,
+  )
 
   const {
     data,
@@ -64,21 +144,15 @@ function RouteComponent() {
     isError,
     error,
   } = useInfiniteQuery({
-    queryKey: ['snippets', { tags: selectedTagIds }],
+    queryKey: ['snippets', snippetsParams],
     queryFn: ({ pageParam }) =>
-      getSnippets({ page: pageParam, perPage: 10, tags: selectedTagIds }),
+      getSnippets({ page: pageParam, perPage: 10, ...snippetsParams }),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
       return lastPage.meta.currentPage < lastPage.meta.lastPage
         ? lastPage.meta.currentPage + 1
         : undefined
     },
-    placeholderData: keepPreviousData,
-  })
-
-  const { data: tagsData, isLoading: tagsLoading } = useQuery({
-    queryKey: ['tags', searchQuery],
-    queryFn: () => getTags({ page: 1, perPage: 100, search: searchQuery }),
     placeholderData: keepPreviousData,
   })
 
@@ -99,6 +173,41 @@ function RouteComponent() {
     return () => observer.disconnect()
   }, [hasNextPage, isFetchingNextPage, fetchNextPage])
 
+  useEffect(() => {
+    const urlParams = tokensToSearchParams(
+      tokens,
+      textSearch,
+      sortBy,
+      sortOrder,
+    )
+    navigate({
+      to: '/snippets',
+      search: urlParams,
+      replace: true,
+    })
+  }, [tokens, textSearch, sortBy, sortOrder, navigate])
+
+  const handleTokenAdd = (token: SearchToken) => {
+    setTokens((prev) => [...prev, token])
+    setInputValue('')
+  }
+
+  const handleTokenRemove = (index: number) => {
+    setTokens((prev) => prev.filter((_, i) => i !== index))
+  }
+
+  const handleInputChange = (value: string) => {
+    setInputValue(value)
+    if (value === '' && textSearch) {
+      setTextSearch('')
+    }
+  }
+
+  const handleTextSearch = (text: string) => {
+    setTextSearch(text)
+    setInputValue(text)
+  }
+
   if (isError) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -111,49 +220,64 @@ function RouteComponent() {
   }
 
   const allSnippets = data?.pages.flatMap((page) => page.data) ?? []
-  const tags = tagsData?.data ?? []
-
-  const handleTagSelectionChange = (newSelectedTags: Tag[]) => {
-    navigate({
-      to: '/snippets',
-      search: {
-        tags: newSelectedTags.map((tag) => tag.id),
-      },
-    })
-  }
-
-  const handleTagSearch = (query: string) => {
-    setSearchQuery(query)
-  }
-
-  const multiSelectTags = tags.map((tag) => ({
-    id: tag.id,
-    name: tag.name,
-    count: tag.numberOfSnippets,
-    description: tag.description,
-  }))
-
-  const multiSelectSelectedTags = selectedTags.map((tag) => ({
-    id: tag.id,
-    name: tag.name,
-    description: tag.description,
-  }))
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Snippets</h1>
+    <div className="container mx-auto px-4 pb-8">
+      <h1 className="text-3xl font-bold mb-3">Snippets</h1>
 
-      <div className="mb-8">
-        <MultiSelect
-          items={multiSelectTags}
-          selectedItems={multiSelectSelectedTags}
-          onSelectionChange={handleTagSelectionChange}
-          label="Filter by Tags"
-          searchPlaceholder="Search tags..."
-          placeholder="No tags available"
-          isLoading={tagsLoading}
-          onSearch={handleTagSearch}
+      <div className="mb-3">
+        <SearchInput
+          tokens={tokens}
+          onTokenAdd={handleTokenAdd}
+          onTokenRemove={handleTokenRemove}
+          inputValue={inputValue}
+          onInputChange={handleInputChange}
+          onTextSearch={handleTextSearch}
+          currentTextSearch={textSearch}
         />
+      </div>
+
+      <div className="mb-6 flex gap-4 items-center">
+        <div className="flex items-center gap-2">
+          <label
+            htmlFor="sortBy"
+            className="text-sm font-medium text-gray-700 dark:text-gray-300"
+          >
+            Sort by:
+          </label>
+          <select
+            id="sortBy"
+            value={sortBy}
+            onChange={(e) =>
+              setSortBy(
+                e.target.value as 'createdAt' | 'updatedAt' | 'numberOfUpvotes',
+              )
+            }
+            className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-1.5 text-sm text-gray-900 dark:text-gray-100"
+          >
+            <option value="createdAt">Created At</option>
+            <option value="updatedAt">Updated At</option>
+            <option value="numberOfUpvotes">Upvotes</option>
+          </select>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <label
+            htmlFor="sortOrder"
+            className="text-sm font-medium text-gray-700 dark:text-gray-300"
+          >
+            Order:
+          </label>
+          <select
+            id="sortOrder"
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
+            className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-1.5 text-sm text-gray-900 dark:text-gray-100"
+          >
+            <option value="desc">Descending</option>
+            <option value="asc">Ascending</option>
+          </select>
+        </div>
       </div>
 
       {isLoading && allSnippets.length === 0 ? (

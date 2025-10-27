@@ -3,12 +3,8 @@ import {
   Scripts,
   createRootRouteWithContext,
 } from '@tanstack/react-router'
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import Header from '../components/Header'
-
-import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
 import appCss from '../styles.css?url'
 
@@ -55,18 +51,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <main className="bg-linear-to-br from-slate-900 via-slate-900/97 to-slate-900 min-h-[calc(100vh-4rem)] dark:text-white text-black">
           <div className="max-w-7xl mx-auto p-4">{children}</div>
         </main>
-        <TanStackDevtools
-          config={{
-            position: 'bottom-right',
-          }}
-          plugins={[
-            {
-              name: 'Tanstack Router',
-              render: <TanStackRouterDevtoolsPanel />,
-            },
-            TanStackQueryDevtools,
-          ]}
-        />
         <Footer />
         <Scripts />
       </body>
