@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, useNavigate, useRouter } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
 import { useForm } from '@tanstack/react-form'
 import { createSnippet } from '../../lib/api/snippets'
@@ -13,20 +13,44 @@ import {
   PackagesList,
   SubmitSection,
 } from '../../components/snippet/create'
+import { z } from 'zod'
+
+const FORM_STATE_KEY = 'snippetFormState'
+
+const snippetNewSearchSchema = z.object({
+  prefillTagName: z.string().optional(),
+})
 
 export const Route = createFileRoute('/snippets/new')({
+  validateSearch: snippetNewSearchSchema,
   component: RouteComponent,
 })
 
 function RouteComponent() {
   const navigate = useNavigate()
+  const router = useRouter()
+  const { prefillTagName } = Route.useSearch()
   const [tagSearch, setTagSearch] = useState('')
   const { tags: availableTags, isLoading: loadingTags } = useTags(tagSearch)
   const [viewMode, setViewMode] = useState<'split' | 'stacked'>('split')
   const [submitError, setSubmitError] = useState<string | null>(null)
 
+  const getSavedFormState = () => {
+    try {
+      const saved = sessionStorage.getItem(FORM_STATE_KEY)
+      if (saved) {
+        return JSON.parse(saved)
+      }
+    } catch (e) {
+      console.error('Failed to parse saved form state:', e)
+    }
+    return null
+  }
+
+  const savedState = getSavedFormState()
+
   const form = useForm({
-    defaultValues: {
+    defaultValues: savedState || {
       title: '',
       description: '',
       code: '',
@@ -46,11 +70,12 @@ function RouteComponent() {
           title: value.title,
           description: value.description,
           content: value.code,
-          tags: value.tags.map((tag) => tag.id),
+          tags: value.tags.map((tag: { id: string; name: string }) => tag.id),
           packages: value.packages,
           copyRecommendation: value.copyRecommendation,
           author: value.alternateAuthor || undefined,
         })
+        sessionStorage.removeItem(FORM_STATE_KEY)
         navigate({ to: `/snippets/${createdSnippet.id}` })
       } catch (error) {
         const errorMessage =
@@ -68,9 +93,29 @@ function RouteComponent() {
     const unsubscribe = form.store.subscribe(() => {
       const state = form.store.state
       setCodeValue(state.values.code)
+
+      try {
+        sessionStorage.setItem(FORM_STATE_KEY, JSON.stringify(state.values))
+      } catch (e) {
+        console.error('Failed to save form state:', e)
+      }
     })
     return unsubscribe
   }, [form.store])
+
+  useEffect(() => {
+    return () => {
+      if (router.state.location.pathname !== '/tags/new') {
+        sessionStorage.removeItem(FORM_STATE_KEY)
+      }
+    }
+  }, [router.state.location.pathname])
+
+  useEffect(() => {
+    if (prefillTagName && tagSearch !== prefillTagName) {
+      setTagSearch(prefillTagName)
+    }
+  }, [prefillTagName])
 
   const { detectedPackages, removePackage } = usePackageDetection(codeValue)
 
@@ -120,7 +165,9 @@ function RouteComponent() {
           availableTags={availableTags}
           loadingTags={loadingTags}
           onTagSearch={setTagSearch}
-          onCreateTag={() => navigate({ to: '/tags/new' })}
+          onCreateTag={() =>
+            navigate({ to: '/tags/new', search: { prefillTagName: tagSearch } })
+          }
         />
 
         <CodeEditorSection

@@ -4,18 +4,25 @@ import { useState } from 'react'
 import { createTag } from '../../lib/api/tags'
 import { tagFormSchema } from '../../lib/validation/tagSchema'
 import { AlertCircle } from 'lucide-react'
+import { z } from 'zod'
+
+const tagNewSearchSchema = z.object({
+  prefillTagName: z.string().optional(),
+})
 
 export const Route = createFileRoute('/tags/new')({
+  validateSearch: tagNewSearchSchema,
   component: RouteComponent,
 })
 
 function RouteComponent() {
   const navigate = useNavigate()
+  const { prefillTagName } = Route.useSearch()
   const [submitError, setSubmitError] = useState<string | null>(null)
 
   const form = useForm({
     defaultValues: {
-      name: '',
+      name: prefillTagName || '',
       description: '',
     },
     onSubmit: async ({ value }) => {
