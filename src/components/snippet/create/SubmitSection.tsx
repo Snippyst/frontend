@@ -4,12 +4,14 @@ interface SubmitSectionProps {
   form: any
   submitError: string | null
   onCancel: () => void
+  isEdit?: boolean
 }
 
 export function SubmitSection({
   form,
   submitError,
   onCancel,
+  isEdit = false,
 }: SubmitSectionProps) {
   return (
     <>
@@ -19,7 +21,7 @@ export function SubmitSection({
             <AlertCircle className="h-5 w-5 shrink-0 text-red-600 dark:text-red-400" />
             <div className="flex-1">
               <h3 className="text-sm font-semibold text-red-800 dark:text-red-200">
-                Error creating snippet
+                Error {isEdit ? 'updating' : 'creating'} snippet
               </h3>
               <p className="mt-1 text-sm text-red-700 dark:text-red-300">
                 {submitError}
@@ -61,7 +63,11 @@ export function SubmitSection({
                 disabled={!canSubmit || isSubmitting}
                 className="rounded-md border border-transparent bg-blue-600 px-5 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-400 dark:focus:ring-offset-gray-900"
               >
-                {isSubmitting ? 'Uploading and compiling...' : 'Create Snippet'}
+                {isSubmitting
+                  ? 'Uploading and compiling...'
+                  : isEdit
+                    ? 'Update Snippet'
+                    : 'Create Snippet'}
               </button>
             </div>
           )}

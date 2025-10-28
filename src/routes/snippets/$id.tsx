@@ -71,6 +71,7 @@ function RouteComponent() {
   if (!snippet) return null
 
   const canDelete = snippet.createdBy?.id === user?.id
+  const canEdit = snippet.createdBy?.id === user?.id
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-7xl">
@@ -83,6 +84,16 @@ function RouteComponent() {
         </Link>
         <div className="flex items-center gap-3">
           <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
+          {/* TODO: Extra component, better styling */}
+          {canEdit && (
+            <Link
+              to="/snippets/$id/edit"
+              params={{ id: snippet.id }}
+              className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+            >
+              Edit
+            </Link>
+          )}
           {canDelete && <DeleteButton snippetId={snippet.id} />}
         </div>
       </div>

@@ -215,3 +215,41 @@ export async function deleteSnippet(id: string): Promise<void> {
     throw new Error(`Failed to delete snippet: ${response.statusText}`)
   }
 }
+
+export interface UpdateSnippetParams {
+  title?: string
+  description?: string
+  content?: string
+  tags?: string[]
+  packages?: Array<{
+    namespace: string
+    name: string
+    version: string
+  }>
+  copyRecommendation?: string
+  author?: string
+}
+
+export async function updateSnippet(
+  id: string,
+  params: UpdateSnippetParams,
+): Promise<Snippet> {
+  const url = new URL(getApiUrl(`/snippets/${id}`))
+
+  const response = await fetch(url.toString(), {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(params),
+    credentials: 'include',
+  })
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to update snippet: ${(await response.json()).message}`,
+    )
+  }
+
+  return response.json()
+}
