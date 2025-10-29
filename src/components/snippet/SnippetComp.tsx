@@ -15,7 +15,7 @@ export default function SnippetComp({ snippet }: { snippet: Snippet }) {
         >
           <div className="mb-4 h-48 w-full overflow-hidden rounded-md bg-white  flex items-center justify-center">
             <img
-              src={snippet.image}
+              src={snippet.image + '/preview'}
               alt={snippet.title}
               className="max-w-full max-h-full object-contain "
               loading="lazy"

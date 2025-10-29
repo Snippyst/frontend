@@ -16,9 +16,6 @@ const config = defineConfig({
     nitro({ config: { preset: 'node-server' } }),
     viteReact(),
   ],
-  build: {
-    emptyOutDir: true,
-  },
   optimizeDeps: {
     exclude: [
       '@myriaddreamin/typst-ts-web-compiler',

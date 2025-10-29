@@ -2,9 +2,7 @@ Dockerfile
 .dockerignore
 .gitignore
 dist
-.output
 .tanstack
-.nitro
 README.md
 build
 node_modules

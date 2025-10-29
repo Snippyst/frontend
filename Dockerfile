@@ -8,9 +8,6 @@ RUN npm ci
 
 COPY . .
 
-# Should not be present anyway, but currently this is my only idea to prevent the wrong css from being included in the docker container build
-RUN rm -rf .output .nitro .tanstack
-
 RUN npm run build
 
 FROM node:22-alpine
