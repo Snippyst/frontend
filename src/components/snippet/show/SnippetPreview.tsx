@@ -38,6 +38,9 @@ export default function SnippetPreview({
     handleMouseDown,
     handleMouseMove,
     handleMouseUp,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
     resetZoom,
   } = useSnippetZoom(snippet.image, viewMode)
 
@@ -138,11 +141,15 @@ export default function SnippetPreview({
         style={{
           cursor: isDragging ? 'grabbing' : 'grab',
           height: `${previewHeight}px`,
+          touchAction: 'none',
         }}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         <div
           style={{

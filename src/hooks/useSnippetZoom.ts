@@ -1,19 +1,18 @@
-import { useState, useEffect, useRef, RefObject, useCallback } from 'react'
-
-interface Position {
-  x: number
-  y: number
-}
+import { useEffect, useRef, RefObject, useCallback } from 'react'
+import { useZoomAndPan } from './useZoomAndPan'
 
 interface UseSnippetZoomReturn {
   scale: number
-  position: Position
+  position: { x: number; y: number }
   isDragging: boolean
   containerRef: RefObject<HTMLDivElement | null>
   objectRef: RefObject<HTMLObjectElement | null>
   handleMouseDown: (e: React.MouseEvent) => void
   handleMouseMove: (e: React.MouseEvent) => void
   handleMouseUp: () => void
+  handleTouchStart: (e: React.TouchEvent) => void
+  handleTouchMove: (e: React.TouchEvent) => void
+  handleTouchEnd: () => void
   resetZoom: () => void
 }
 
@@ -21,17 +20,12 @@ export function useSnippetZoom(
   imageUrl: string,
   viewMode: 'split' | 'stacked',
 ): UseSnippetZoomReturn {
-  const [scale, setScale] = useState(1)
-  const [position, setPosition] = useState<Position>({ x: 0, y: 0 })
-  const [isDragging, setIsDragging] = useState(false)
-
-  const containerRef = useRef<HTMLDivElement | null>(null)
+  const zoomAndPan = useZoomAndPan()
   const objectRef = useRef<HTMLObjectElement | null>(null)
-  const dragStartRef = useRef<Position>({ x: 0, y: 0 })
   const hasFittedRef = useRef(false)
 
   const fitToContainer = useCallback(() => {
-    const container = containerRef.current
+    const container = zoomAndPan.containerRef.current
     const obj = objectRef.current
 
     if (!container || !obj) return false
@@ -48,8 +42,8 @@ export function useSnippetZoom(
 
       if (objWidth > 0 && objHeight > 0) {
         const newScale = Math.min(cw / objWidth, ch / objHeight) * 0.95
-        setScale(newScale)
-        setPosition({
+        zoomAndPan.setScale(newScale)
+        zoomAndPan.setPosition({
           x: (cw - objWidth * newScale) / 2,
           y: (ch - objHeight * newScale) / 2,
         })
@@ -61,7 +55,7 @@ export function useSnippetZoom(
     }
 
     return false
-  }, [])
+  }, [zoomAndPan.setScale, zoomAndPan.setPosition, zoomAndPan.containerRef])
 
   useEffect(() => {
     hasFittedRef.current = false
@@ -70,11 +64,16 @@ export function useSnippetZoom(
     if (!obj) return
 
     const attemptFit = () => {
-      if (!hasFittedRef.current) fitToContainer()
+      if (!hasFittedRef.current) {
+        const success = fitToContainer()
+        if (success) {
+          clearInterval(intervalId)
+        }
+      }
     }
 
     const timeoutId = setTimeout(attemptFit, 150)
-    const intervalId = setInterval(() => attemptFit(), 150)
+    const intervalId = setInterval(attemptFit, 150)
 
     return () => {
       clearTimeout(timeoutId)
@@ -82,76 +81,14 @@ export function useSnippetZoom(
     }
   }, [imageUrl, viewMode, fitToContainer])
 
-  useEffect(() => {
-    const handleWheel = (e: WheelEvent) => {
-      const container = containerRef.current
-      if (!container?.contains(e.target as Node)) return
-
-      e.preventDefault()
-
-      const rect = container.getBoundingClientRect()
-      const cursorX = e.clientX - rect.left
-      const cursorY = e.clientY - rect.top
-
-      const worldX = (cursorX - position.x) / scale
-      const worldY = (cursorY - position.y) / scale
-
-      const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1
-      const newScale = Math.max(0.1, Math.min(5, scale * zoomFactor))
-      const newPosition = {
-        x: cursorX - worldX * newScale,
-        y: cursorY - worldY * newScale,
-      }
-
-      setScale(newScale)
-      setPosition(newPosition)
-    }
-
-    window.addEventListener('wheel', handleWheel, { passive: false })
-    return () => window.removeEventListener('wheel', handleWheel)
-  }, [scale, position])
-
-  const handleMouseDown = useCallback(
-    (e: React.MouseEvent) => {
-      if (e.button !== 0) return
-      setIsDragging(true)
-      dragStartRef.current = {
-        x: e.clientX - position.x,
-        y: e.clientY - position.y,
-      }
-    },
-    [position],
-  )
-
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent) => {
-      if (!isDragging) return
-      setPosition({
-        x: e.clientX - dragStartRef.current.x,
-        y: e.clientY - dragStartRef.current.y,
-      })
-    },
-    [isDragging],
-  )
-
-  const handleMouseUp = useCallback(() => {
-    setIsDragging(false)
-  }, [])
-
   const resetZoom = useCallback(() => {
     hasFittedRef.current = false
     fitToContainer()
   }, [fitToContainer])
 
   return {
-    scale,
-    position,
-    isDragging,
-    containerRef,
+    ...zoomAndPan,
     objectRef,
-    handleMouseDown,
-    handleMouseMove,
-    handleMouseUp,
     resetZoom,
   }
 }

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import type { TypstCompiler, TypstRenderer } from '@myriaddreamin/typst.ts'
+import { useContentZoom } from '@/hooks/useContentZoom'
 
 let createTypstCompiler: any
 let createTypstRenderer: any
@@ -16,13 +17,26 @@ interface TypstPreviewProps {
 }
 
 export function TypstPreview({ code, className = '' }: TypstPreviewProps) {
-  const containerRef = useRef<HTMLDivElement>(null)
+  const svgContainerRef = useRef<HTMLDivElement>(null)
   const [compiler, setCompiler] = useState<TypstCompiler | null>(null)
   const [renderer, setRenderer] = useState<TypstRenderer | null>(null)
   const [isInitialized, setIsInitialized] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isCompiling, setIsCompiling] = useState(false)
   const [isBrowser, setIsBrowser] = useState(false)
+
+  const {
+    scale,
+    position,
+    isDragging,
+    containerRef,
+    handleMouseDown,
+    handleMouseMove,
+    handleMouseUp,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
+  } = useContentZoom()
 
   useEffect(() => {
     setIsBrowser(typeof window !== 'undefined')
@@ -96,7 +110,7 @@ export function TypstPreview({ code, className = '' }: TypstPreviewProps) {
       !isInitialized ||
       !compiler ||
       !renderer ||
-      !containerRef.current ||
+      !svgContainerRef.current ||
       !code.trim()
     ) {
       return
@@ -145,8 +159,8 @@ export function TypstPreview({ code, className = '' }: TypstPreviewProps) {
           })
         })
 
-        if (containerRef.current) {
-          containerRef.current.innerHTML = svg
+        if (svgContainerRef.current) {
+          svgContainerRef.current.innerHTML = svg
         }
       } catch (err) {
         console.error('Compilation/rendering error:', err)
@@ -186,23 +200,57 @@ export function TypstPreview({ code, className = '' }: TypstPreviewProps) {
         </div>
       )}
 
-      {isInitialized && isCompiling && (
-        <div className="border-b border-gray-300 bg-blue-50 px-4 py-2">
-          <p className="text-sm text-blue-700">Compiling...</p>
-        </div>
+      {isInitialized && (
+        <>
+          {isCompiling && (
+            <div className="border-b border-gray-300 bg-blue-50 px-4 py-2">
+              <p className="text-sm text-blue-700">Compiling...</p>
+            </div>
+          )}
+
+          {error && (
+            <div className="border-b border-red-300 bg-red-50 px-4 py-2">
+              <p className="text-sm text-red-700">{error}</p>
+            </div>
+          )}
+
+          <div
+            ref={containerRef}
+            className="flex-1 overflow-hidden bg-white relative"
+            style={{
+              cursor: isDragging ? 'grabbing' : 'grab',
+              minHeight: '100%',
+              touchAction: 'none',
+            }}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            <div
+              style={{
+                transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
+                transformOrigin: '0 0',
+                transition: isDragging ? 'none' : 'transform 0.1s ease-out',
+              }}
+              className="inline-block p-4"
+            >
+              <div ref={svgContainerRef} style={{ pointerEvents: 'none' }} />
+            </div>
+          </div>
+        </>
       )}
 
-      {error && (
-        <div className="border-b border-red-300 bg-red-50 px-4 py-2">
-          <p className="text-sm text-red-700">{error}</p>
-        </div>
+      {!isInitialized && isBrowser && (
+        <div
+          ref={containerRef}
+          className="flex-1 overflow-auto p-4 bg-white"
+          style={{ minHeight: '100%' }}
+        />
       )}
-
-      <div
-        ref={containerRef}
-        className="flex-1 overflow-auto p-4 bg-white"
-        style={{ minHeight: '100%' }}
-      />
     </div>
   )
 }
