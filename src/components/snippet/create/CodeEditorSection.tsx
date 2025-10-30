@@ -1,6 +1,6 @@
 import Editor from '@monaco-editor/react'
 import type { editor } from 'monaco-editor'
-import { Columns2, AlignJustify, Info } from 'lucide-react'
+import { Columns2, AlignJustify, Info, Wand2 } from 'lucide-react'
 import { TypstPreview } from '../../TypstPreview'
 import { snippetFormSchema } from '../../../lib/validation/snippetSchema'
 
@@ -12,6 +12,9 @@ interface CodeEditorSectionProps {
   onViewModeChange: (mode: 'split' | 'stacked') => void
   onSetCopyRecommendation: () => void
   onClearCopyRecommendation: () => void
+  onFormat: () => void
+  isFormatting?: boolean
+  formatError?: string | null
 }
 
 export function CodeEditorSection({
@@ -22,6 +25,9 @@ export function CodeEditorSection({
   onViewModeChange,
   onSetCopyRecommendation,
   onClearCopyRecommendation,
+  onFormat,
+  isFormatting = false,
+  formatError = null,
 }: CodeEditorSectionProps) {
   return (
     <form.Field
@@ -43,6 +49,16 @@ export function CodeEditorSection({
                 Code Editor
               </h3>
               <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={onFormat}
+                  disabled={isFormatting}
+                  className="rounded-md bg-purple-50 px-2.5 py-1.5 text-xs font-medium text-blue-700 transition-colors hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 dark:hover:bg-blue-900/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+                  title="Format code with Typstyle"
+                >
+                  <Wand2 className="h-3 w-3" />
+                  {isFormatting ? 'Formatting...' : 'Format'}
+                </button>
                 <button
                   type="button"
                   onClick={onSetCopyRecommendation}
@@ -79,6 +95,16 @@ export function CodeEditorSection({
                 </div>
               </div>
             </div>
+            {formatError && (
+              <div className="border-b border-red-200 bg-red-50 px-4 py-2 dark:border-red-800 dark:bg-red-900/20">
+                <div className="flex items-center gap-2">
+                  <Info className="h-4 w-4 shrink-0 text-red-600 dark:text-red-400" />
+                  <span className="text-xs font-medium text-red-700 dark:text-red-300">
+                    Format error: {formatError}
+                  </span>
+                </div>
+              </div>
+            )}
             {copyRecommendation && (
               <div className="border-b border-blue-200 bg-blue-50 px-4 py-2 dark:border-blue-800 dark:bg-blue-900/20">
                 <div className="flex items-center justify-between">

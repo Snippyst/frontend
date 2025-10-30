@@ -6,6 +6,7 @@ import {
   useTags,
   usePackageDetection,
   useCopyRecommendation,
+  useTypstyleFormatter,
 } from '../../hooks'
 import {
   BasicInformation,
@@ -66,10 +67,17 @@ function RouteComponent() {
     onSubmit: async ({ value }) => {
       setSubmitError(null)
       try {
+        const formattedCode = format(value.code)
+        if (formattedCode !== null && formattedCode !== value.code) {
+          form.setFieldValue('code', formattedCode)
+          await new Promise((resolve) => setTimeout(resolve, 100))
+        }
+        const codeToSubmit = formattedCode !== null ? formattedCode : value.code
+
         const createdSnippet = await createSnippet({
           title: value.title,
           description: value.description,
-          content: value.code,
+          content: codeToSubmit,
           tags: value.tags.map((tag: { id: string; name: string }) => tag.id),
           packages: value.packages,
           copyRecommendation: value.copyRecommendation,
@@ -126,6 +134,8 @@ function RouteComponent() {
     setEditorReference,
   } = useCopyRecommendation()
 
+  const { format, isFormatting, formatError } = useTypstyleFormatter()
+
   useEffect(() => {
     form.setFieldValue('packages', detectedPackages)
   }, [detectedPackages])
@@ -138,6 +148,14 @@ function RouteComponent() {
     const success = setCopyRangeFromSelection()
     if (!success) {
       alert('Please select a range in the editor first')
+    }
+  }
+
+  const handleFormat = () => {
+    const currentCode = form.getFieldValue('code')
+    const formatted = format(currentCode)
+    if (formatted !== null) {
+      form.setFieldValue('code', formatted)
     }
   }
 
@@ -178,6 +196,9 @@ function RouteComponent() {
           onViewModeChange={setViewMode}
           onSetCopyRecommendation={handleSetCopyRecommendation}
           onClearCopyRecommendation={clearCopyRecommendation}
+          onFormat={handleFormat}
+          isFormatting={isFormatting}
+          formatError={formatError}
         />
 
         <PackagesList

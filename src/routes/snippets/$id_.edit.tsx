@@ -6,6 +6,7 @@ import {
   useTags,
   usePackageDetection,
   useCopyRecommendation,
+  useTypstyleFormatter,
 } from '../../hooks'
 import {
   BasicInformation,
@@ -47,6 +48,13 @@ function RouteComponent() {
     onSubmit: async ({ value }) => {
       setSubmitError(null)
       try {
+        const formattedCode = format(value.code)
+        if (formattedCode !== null && formattedCode !== value.code) {
+          form.setFieldValue('code', formattedCode)
+          await new Promise((resolve) => setTimeout(resolve, 100))
+        }
+        const codeToSubmit = formattedCode !== null ? formattedCode : value.code
+
         const changes: Record<string, any> = {}
 
         if (value.title !== snippet.title) {
@@ -55,8 +63,8 @@ function RouteComponent() {
         if (value.description !== (snippet.description || '')) {
           changes.description = value.description
         }
-        if (value.code !== (snippet.content || '')) {
-          changes.content = value.code
+        if (codeToSubmit !== (snippet.content || '')) {
+          changes.content = codeToSubmit
         }
         const currentTagIds = snippet.tags.map((tag: Tag) => tag.id).sort()
         const newTagIds = value.tags.map((tag: { id: string }) => tag.id).sort()
@@ -64,13 +72,12 @@ function RouteComponent() {
           changes.tags = value.tags.map((tag: { id: string }) => tag.id)
         }
         if (
-          JSON.stringify(value.packages) !== JSON.stringify(snippet.packages || [])
+          JSON.stringify(value.packages) !==
+          JSON.stringify(snippet.packages || [])
         ) {
           changes.packages = value.packages
         }
-        if (
-          value.copyRecommendation !== (snippet.copyRecommendation || '')
-        ) {
+        if (value.copyRecommendation !== (snippet.copyRecommendation || '')) {
           changes.copyRecommendation = value.copyRecommendation
         }
         if (value.alternateAuthor !== (snippet.author || '')) {
@@ -113,6 +120,8 @@ function RouteComponent() {
     setEditorReference,
   } = useCopyRecommendation()
 
+  const { format, isFormatting, formatError } = useTypstyleFormatter()
+
   useEffect(() => {
     form.setFieldValue('packages', detectedPackages)
   }, [detectedPackages])
@@ -125,6 +134,14 @@ function RouteComponent() {
     const success = setCopyRangeFromSelection()
     if (!success) {
       alert('Please select a range in the editor first')
+    }
+  }
+
+  const handleFormat = () => {
+    const currentCode = form.getFieldValue('code')
+    const formatted = format(currentCode)
+    if (formatted !== null) {
+      form.setFieldValue('code', formatted)
     }
   }
 
@@ -165,6 +182,9 @@ function RouteComponent() {
           onViewModeChange={setViewMode}
           onSetCopyRecommendation={handleSetCopyRecommendation}
           onClearCopyRecommendation={clearCopyRecommendation}
+          onFormat={handleFormat}
+          isFormatting={isFormatting}
+          formatError={formatError}
         />
 
         <PackagesList
@@ -175,7 +195,9 @@ function RouteComponent() {
         <SubmitSection
           form={form}
           submitError={submitError}
-          onCancel={() => navigate({ to: '/snippets/$id', params: { id: params.id } })}
+          onCancel={() =>
+            navigate({ to: '/snippets/$id', params: { id: params.id } })
+          }
           isEdit={true}
         />
       </form>
