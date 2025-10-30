@@ -1,17 +1,25 @@
 import { Link } from '@tanstack/react-router'
 import { useAuth } from '@/hooks/useAuth'
-import { Menu, X, Home, Code2, Plus, User, LogIn } from 'lucide-react'
+import { Menu, X, Home, Code2, Plus, User, LogIn, Shield } from 'lucide-react'
 import { useState } from 'react'
 
 export default function Header() {
   const { user, isAuthenticated } = useAuth()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  const navLinks = [
+  const baseNavLinks = [
     { to: '/', label: 'Home', icon: Home },
     { to: '/snippets', label: 'Snippets', icon: Code2 },
     { to: '/snippets/new', label: 'New Snippet', icon: Plus },
   ]
+
+  const moderationLink = user?.isPrivileged
+    ? { to: '/moderation', label: 'Moderate', icon: Shield }
+    : null
+
+  const navLinks = moderationLink
+    ? [...baseNavLinks, moderationLink]
+    : baseNavLinks
 
   const authLink = isAuthenticated
     ? { to: '/auth/me', label: user?.username || 'Profile', icon: User }

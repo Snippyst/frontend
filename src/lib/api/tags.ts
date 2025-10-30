@@ -72,3 +72,42 @@ export async function getTagsByIds(ids: string[]): Promise<Tag[]> {
 
   return response.json()
 }
+
+export interface UpdateTagData {
+  name?: string
+  description?: string
+}
+
+export async function updateTag(id: string, data: UpdateTagData): Promise<Tag> {
+  const response = await fetch(getApiUrl(`/tags/${id}`), {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify(data),
+  })
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}))
+    throw new Error(
+      error.message || `Failed to update tag: ${response.statusText}`,
+    )
+  }
+
+  return response.json()
+}
+
+export async function deleteTag(id: string): Promise<void> {
+  const response = await fetch(getApiUrl(`/tags/${id}`), {
+    method: 'DELETE',
+    credentials: 'include',
+  })
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}))
+    throw new Error(
+      error.message || `Failed to delete tag: ${response.statusText}`,
+    )
+  }
+}

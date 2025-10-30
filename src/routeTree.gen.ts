@@ -13,9 +13,13 @@ import { Route as TosRouteImport } from './routes/tos'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SnippetsIndexRouteImport } from './routes/snippets/index'
+import { Route as ModerationIndexRouteImport } from './routes/moderation/index'
 import { Route as TagsNewRouteImport } from './routes/tags/new'
 import { Route as SnippetsNewRouteImport } from './routes/snippets/new'
 import { Route as SnippetsIdRouteImport } from './routes/snippets/$id'
+import { Route as ModerationUsersRouteImport } from './routes/moderation/users'
+import { Route as ModerationTagsRouteImport } from './routes/moderation/tags'
+import { Route as ModerationSnippetsRouteImport } from './routes/moderation/snippets'
 import { Route as AuthMeRouteImport } from './routes/auth/me'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as SnippetsIdEditRouteImport } from './routes/snippets/$id_.edit'
@@ -41,6 +45,11 @@ const SnippetsIndexRoute = SnippetsIndexRouteImport.update({
   path: '/snippets/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ModerationIndexRoute = ModerationIndexRouteImport.update({
+  id: '/moderation/',
+  path: '/moderation/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TagsNewRoute = TagsNewRouteImport.update({
   id: '/tags/new',
   path: '/tags/new',
@@ -54,6 +63,21 @@ const SnippetsNewRoute = SnippetsNewRouteImport.update({
 const SnippetsIdRoute = SnippetsIdRouteImport.update({
   id: '/snippets/$id',
   path: '/snippets/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModerationUsersRoute = ModerationUsersRouteImport.update({
+  id: '/moderation/users',
+  path: '/moderation/users',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModerationTagsRoute = ModerationTagsRouteImport.update({
+  id: '/moderation/tags',
+  path: '/moderation/tags',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModerationSnippetsRoute = ModerationSnippetsRouteImport.update({
+  id: '/moderation/snippets',
+  path: '/moderation/snippets',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthMeRoute = AuthMeRouteImport.update({
@@ -83,9 +107,13 @@ export interface FileRoutesByFullPath {
   '/tos': typeof TosRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/me': typeof AuthMeRoute
+  '/moderation/snippets': typeof ModerationSnippetsRoute
+  '/moderation/tags': typeof ModerationTagsRoute
+  '/moderation/users': typeof ModerationUsersRoute
   '/snippets/$id': typeof SnippetsIdRoute
   '/snippets/new': typeof SnippetsNewRoute
   '/tags/new': typeof TagsNewRoute
+  '/moderation': typeof ModerationIndexRoute
   '/snippets': typeof SnippetsIndexRoute
   '/auth/$provider/callback': typeof AuthProviderCallbackRoute
   '/snippets/$id/edit': typeof SnippetsIdEditRoute
@@ -96,9 +124,13 @@ export interface FileRoutesByTo {
   '/tos': typeof TosRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/me': typeof AuthMeRoute
+  '/moderation/snippets': typeof ModerationSnippetsRoute
+  '/moderation/tags': typeof ModerationTagsRoute
+  '/moderation/users': typeof ModerationUsersRoute
   '/snippets/$id': typeof SnippetsIdRoute
   '/snippets/new': typeof SnippetsNewRoute
   '/tags/new': typeof TagsNewRoute
+  '/moderation': typeof ModerationIndexRoute
   '/snippets': typeof SnippetsIndexRoute
   '/auth/$provider/callback': typeof AuthProviderCallbackRoute
   '/snippets/$id/edit': typeof SnippetsIdEditRoute
@@ -110,9 +142,13 @@ export interface FileRoutesById {
   '/tos': typeof TosRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/me': typeof AuthMeRoute
+  '/moderation/snippets': typeof ModerationSnippetsRoute
+  '/moderation/tags': typeof ModerationTagsRoute
+  '/moderation/users': typeof ModerationUsersRoute
   '/snippets/$id': typeof SnippetsIdRoute
   '/snippets/new': typeof SnippetsNewRoute
   '/tags/new': typeof TagsNewRoute
+  '/moderation/': typeof ModerationIndexRoute
   '/snippets/': typeof SnippetsIndexRoute
   '/auth/$provider/callback': typeof AuthProviderCallbackRoute
   '/snippets/$id_/edit': typeof SnippetsIdEditRoute
@@ -125,9 +161,13 @@ export interface FileRouteTypes {
     | '/tos'
     | '/auth/login'
     | '/auth/me'
+    | '/moderation/snippets'
+    | '/moderation/tags'
+    | '/moderation/users'
     | '/snippets/$id'
     | '/snippets/new'
     | '/tags/new'
+    | '/moderation'
     | '/snippets'
     | '/auth/$provider/callback'
     | '/snippets/$id/edit'
@@ -138,9 +178,13 @@ export interface FileRouteTypes {
     | '/tos'
     | '/auth/login'
     | '/auth/me'
+    | '/moderation/snippets'
+    | '/moderation/tags'
+    | '/moderation/users'
     | '/snippets/$id'
     | '/snippets/new'
     | '/tags/new'
+    | '/moderation'
     | '/snippets'
     | '/auth/$provider/callback'
     | '/snippets/$id/edit'
@@ -151,9 +195,13 @@ export interface FileRouteTypes {
     | '/tos'
     | '/auth/login'
     | '/auth/me'
+    | '/moderation/snippets'
+    | '/moderation/tags'
+    | '/moderation/users'
     | '/snippets/$id'
     | '/snippets/new'
     | '/tags/new'
+    | '/moderation/'
     | '/snippets/'
     | '/auth/$provider/callback'
     | '/snippets/$id_/edit'
@@ -165,9 +213,13 @@ export interface RootRouteChildren {
   TosRoute: typeof TosRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthMeRoute: typeof AuthMeRoute
+  ModerationSnippetsRoute: typeof ModerationSnippetsRoute
+  ModerationTagsRoute: typeof ModerationTagsRoute
+  ModerationUsersRoute: typeof ModerationUsersRoute
   SnippetsIdRoute: typeof SnippetsIdRoute
   SnippetsNewRoute: typeof SnippetsNewRoute
   TagsNewRoute: typeof TagsNewRoute
+  ModerationIndexRoute: typeof ModerationIndexRoute
   SnippetsIndexRoute: typeof SnippetsIndexRoute
   AuthProviderCallbackRoute: typeof AuthProviderCallbackRoute
   SnippetsIdEditRoute: typeof SnippetsIdEditRoute
@@ -203,6 +255,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SnippetsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/moderation/': {
+      id: '/moderation/'
+      path: '/moderation'
+      fullPath: '/moderation'
+      preLoaderRoute: typeof ModerationIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tags/new': {
       id: '/tags/new'
       path: '/tags/new'
@@ -222,6 +281,27 @@ declare module '@tanstack/react-router' {
       path: '/snippets/$id'
       fullPath: '/snippets/$id'
       preLoaderRoute: typeof SnippetsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/moderation/users': {
+      id: '/moderation/users'
+      path: '/moderation/users'
+      fullPath: '/moderation/users'
+      preLoaderRoute: typeof ModerationUsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/moderation/tags': {
+      id: '/moderation/tags'
+      path: '/moderation/tags'
+      fullPath: '/moderation/tags'
+      preLoaderRoute: typeof ModerationTagsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/moderation/snippets': {
+      id: '/moderation/snippets'
+      path: '/moderation/snippets'
+      fullPath: '/moderation/snippets'
+      preLoaderRoute: typeof ModerationSnippetsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/me': {
@@ -261,9 +341,13 @@ const rootRouteChildren: RootRouteChildren = {
   TosRoute: TosRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthMeRoute: AuthMeRoute,
+  ModerationSnippetsRoute: ModerationSnippetsRoute,
+  ModerationTagsRoute: ModerationTagsRoute,
+  ModerationUsersRoute: ModerationUsersRoute,
   SnippetsIdRoute: SnippetsIdRoute,
   SnippetsNewRoute: SnippetsNewRoute,
   TagsNewRoute: TagsNewRoute,
+  ModerationIndexRoute: ModerationIndexRoute,
   SnippetsIndexRoute: SnippetsIndexRoute,
   AuthProviderCallbackRoute: AuthProviderCallbackRoute,
   SnippetsIdEditRoute: SnippetsIdEditRoute,

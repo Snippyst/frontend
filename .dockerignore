@@ -1,9 +1,0 @@
-Dockerfile
-.dockerignore
-.gitignore
-dist
-.tanstack
-README.md
-build
-node_modules
-.vscode
