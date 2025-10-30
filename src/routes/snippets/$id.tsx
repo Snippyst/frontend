@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { getSnippet } from '@/lib/api/snippets'
 import { useSnippetLoader } from '@/hooks/useSnippetLoader'
 import { useViewMode } from '@/hooks/useViewMode'
+import { useLayoutMode } from '@/hooks/useLayoutMode'
 import { useAuth } from '@/hooks/useAuth'
 import LoadingState from '@/components/snippet/LoadingState'
 import SnippetPreview from '@/components/snippet/show/SnippetPreview'
@@ -61,8 +62,43 @@ function RouteComponent() {
   const { id } = Route.useParams()
   const { snippet, isLoading, isError } = useSnippetLoader(id)
   const { viewMode, setViewMode } = useViewMode()
+  const { layoutMode, setLayoutMode } = useLayoutMode()
   const { user } = useAuth()
   const [previewWidth, setPreviewWidth] = useState<number | null>(null)
+  const [codeWidth, setCodeWidth] = useState<number>(() => {
+    if (typeof window === 'undefined') return 600
+    return Math.min(window.innerWidth * 0.5, 800)
+  })
+  const [isResizing, setIsResizing] = useState(false)
+  const [resizeStartX, setResizeStartX] = useState(0)
+  const [resizeStartWidth, setResizeStartWidth] = useState(0)
+
+  useEffect(() => {
+    if (!isResizing) return
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const minWidth = 300
+      const maxWidth = window.innerWidth * 0.7
+      const deltaX = e.clientX - resizeStartX
+      const newWidth = Math.max(
+        minWidth,
+        Math.min(maxWidth, resizeStartWidth + deltaX),
+      )
+      setCodeWidth(newWidth)
+    }
+
+    const handleMouseUp = () => {
+      setIsResizing(false)
+    }
+
+    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mouseup', handleMouseUp)
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('mouseup', handleMouseUp)
+    }
+  }, [isResizing, resizeStartX, resizeStartWidth])
 
   if (isLoading || isError) {
     return <LoadingState />
@@ -83,7 +119,14 @@ function RouteComponent() {
           ← Back to snippets
         </Link>
         <div className="flex items-center gap-3">
-          <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
+          <div className="hidden md:block">
+            <ViewModeToggle
+              viewMode={viewMode}
+              onChange={setViewMode}
+              layoutMode={layoutMode}
+              onLayoutChange={setLayoutMode}
+            />
+          </div>
           {/* TODO: Extra component, better styling */}
           {canEdit && (
             <Link
@@ -98,36 +141,96 @@ function RouteComponent() {
         </div>
       </div>
 
-      {viewMode === 'stacked' ? (
-        <div className="space-y-6">
-          <SnippetInfo snippet={snippet} />
-          <SnippetPreview
-            snippet={snippet}
-            viewMode={viewMode}
-            onWidthChange={setPreviewWidth}
-          />
+      <div className="block md:hidden space-y-6">
+        <SnippetInfo snippet={snippet} />
+        <SnippetPreview
+          snippet={snippet}
+          viewMode="stacked"
+          layoutMode={layoutMode}
+          onWidthChange={setPreviewWidth}
+        />
+        <div style={{ height: '600px' }}>
           <SnippetCode snippet={snippet} />
         </div>
-      ) : (
-        <div className="flex gap-6 items-start" style={{ minHeight: '600px' }}>
-          <div
-            style={{
-              width: previewWidth ? `${previewWidth}px` : undefined,
-              flexShrink: 0,
-            }}
-          >
+      </div>
+
+      <div className="hidden md:block">
+        {viewMode === 'stacked' ? (
+          <div className="space-y-6">
+            <SnippetInfo snippet={snippet} />
             <SnippetPreview
               snippet={snippet}
               viewMode={viewMode}
+              layoutMode={layoutMode}
               onWidthChange={setPreviewWidth}
             />
+            <div style={{ height: '600px' }}>
+              <SnippetCode snippet={snippet} />
+            </div>
           </div>
-          <div className="flex-1 space-y-4 min-w-0">
-            <SnippetInfo snippet={snippet} />
-            <SnippetCode snippet={snippet} />
+        ) : layoutMode === 'code' ? (
+          <div
+            className="flex gap-0 items-stretch overflow-hidden"
+            style={{ minHeight: '600px' }}
+          >
+            <div
+              className="flex flex-col overflow-hidden"
+              style={{ width: `${codeWidth}px`, flexShrink: 0 }}
+            >
+              <SnippetCode snippet={snippet} />
+            </div>
+            <div
+              onMouseDown={(e) => {
+                e.preventDefault()
+                setResizeStartX(e.clientX)
+                setResizeStartWidth(codeWidth)
+                setIsResizing(true)
+              }}
+              className="px-2 flex items-center justify-center shrink-0 cursor-col-resize group"
+              style={{ userSelect: 'none' }}
+            >
+              <div className="w-px h-full bg-gray-300 dark:bg-gray-600 group-hover:bg-blue-500 dark:group-hover:bg-blue-400 transition-colors" />
+            </div>
+            <div className="flex-1 min-w-0 flex flex-col space-y-4 overflow-hidden">
+              <SnippetInfo snippet={snippet} />
+              <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+                <SnippetPreview
+                  snippet={snippet}
+                  viewMode={viewMode}
+                  layoutMode={layoutMode}
+                  onWidthChange={setPreviewWidth}
+                />
+              </div>
+            </div>
           </div>
-        </div>
-      )}
+        ) : (
+          <div
+            className="flex gap-6 items-stretch overflow-hidden"
+            style={{ minHeight: '600px' }}
+          >
+            <div
+              style={{
+                width: previewWidth ? `${previewWidth}px` : undefined,
+                flexShrink: 0,
+              }}
+              className="flex flex-col overflow-hidden"
+            >
+              <SnippetPreview
+                snippet={snippet}
+                viewMode={viewMode}
+                layoutMode={layoutMode}
+                onWidthChange={setPreviewWidth}
+              />
+            </div>
+            <div className="flex-1 flex flex-col space-y-4 min-w-0 overflow-hidden">
+              <SnippetInfo snippet={snippet} />
+              <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+                <SnippetCode snippet={snippet} />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

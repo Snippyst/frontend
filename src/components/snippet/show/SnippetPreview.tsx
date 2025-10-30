@@ -6,16 +6,19 @@ import type { Snippet } from '@/types/snippet'
 interface SnippetPreviewProps {
   snippet: Snippet
   viewMode: 'split' | 'stacked'
+  layoutMode?: 'code' | 'preview'
   onWidthChange?: (width: number) => void
 }
 
 export default function SnippetPreview({
   snippet,
   viewMode,
+  layoutMode = 'code',
   onWidthChange,
 }: SnippetPreviewProps) {
   const [previewWidth, setPreviewWidth] = useState<number | null>(() => {
     if (viewMode === 'stacked') return null
+    if (layoutMode === 'code') return null
 
     // TODO: After hydration this should be recalculated to ensure correct size with Math.min()
     if (typeof window === 'undefined') return 600
@@ -46,6 +49,7 @@ export default function SnippetPreview({
 
   const handleResizeStart = (e: React.MouseEvent) => {
     e.preventDefault()
+    if (layoutMode === 'code' && viewMode === 'split') return
     if (!containerRef.current?.parentElement) return
 
     const rect = containerRef.current.parentElement.getBoundingClientRect()
@@ -101,7 +105,7 @@ export default function SnippetPreview({
         width:
           previewWidth !== null
             ? `${previewWidth}px`
-            : viewMode === 'stacked'
+            : viewMode === 'stacked' || layoutMode === 'code'
               ? '100%'
               : undefined,
         cursor: isResizing ? 'nwse-resize' : undefined,
@@ -177,14 +181,16 @@ export default function SnippetPreview({
           </object>
         </div>
       </div>
-      <div
-        onMouseDown={handleResizeStart}
-        className="absolute bottom-0 right-0 w-4 h-4
-          bg-linear-to-tl from-blue-400 to-transparent
-          dark:from-blue-500 cursor-nwse-resize hover:from-blue-500
-          dark:hover:from-blue-600 transition-colors"
-        style={{ userSelect: 'none' }}
-      />
+      {!(layoutMode === 'code' && viewMode === 'split') && (
+        <div
+          onMouseDown={handleResizeStart}
+          className="absolute bottom-0 right-0 w-4 h-4
+            bg-linear-to-tl from-blue-400 to-transparent
+            dark:from-blue-500 cursor-nwse-resize hover:from-blue-500
+            dark:hover:from-blue-600 transition-colors"
+          style={{ userSelect: 'none' }}
+        />
+      )}
     </div>
   )
 }

@@ -1,4 +1,7 @@
+import { useState, useEffect } from 'react'
 import { useCopyToClipboard } from '@/hooks/useCopyToClipboard'
+import { WrapText, UnfoldHorizontal } from 'lucide-react'
+import Editor from '@monaco-editor/react'
 import type { Snippet } from '@/types/snippet'
 
 interface SnippetCodeProps {
@@ -44,22 +47,46 @@ function getCopyRecommendationContent(
   return result.join('\n')
 }
 
+const LINEWRAP_STORAGE_KEY = 'snippetCodeLineWrap'
+
 export default function SnippetCode({ snippet }: SnippetCodeProps) {
   const { copyStatus, copyToClipboard } = useCopyToClipboard()
+  const [lineWrap, setLineWrap] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false
+    const saved = localStorage.getItem(LINEWRAP_STORAGE_KEY)
+    return saved === 'true'
+  })
+
+  useEffect(() => {
+    localStorage.setItem(LINEWRAP_STORAGE_KEY, lineWrap.toString())
+  }, [lineWrap])
 
   if (!snippet.content) return null
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col h-full min-h-[600px]">
       <div className="bg-gray-100 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-4 py-2 flex items-center justify-between">
         <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
           Code
         </span>
-        {copyStatus && (
-          <span className="text-xs text-green-600 dark:text-green-400">
-            {copyStatus} copied!
-          </span>
-        )}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setLineWrap(!lineWrap)}
+            title={lineWrap ? 'Disable line wrap' : 'Enable line wrap'}
+            className="p-1.5 rounded border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600 transition-colors"
+          >
+            {lineWrap ? (
+              <WrapText className="w-3.5 h-3.5" />
+            ) : (
+              <UnfoldHorizontal className="w-3.5 h-3.5" />
+            )}
+          </button>
+          {copyStatus && (
+            <span className="text-xs text-green-600 dark:text-green-400">
+              {copyStatus} copied!
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="p-3 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 flex flex-wrap gap-2">
@@ -103,8 +130,22 @@ export default function SnippetCode({ snippet }: SnippetCodeProps) {
         )}
       </div>
 
-      <div className="max-h-128 overflow-auto bg-gray-900 dark:bg-black text-gray-100">
-        <pre className="p-4 text-xs ">{snippet.content}</pre>
+      <div className="flex-1 overflow-hidden">
+        <Editor
+          height="100%"
+          value={snippet.content}
+          language={undefined}
+          theme="vs-dark"
+          options={{
+            readOnly: true,
+            minimap: { enabled: false },
+            scrollBeyondLastLine: false,
+            fontSize: 14,
+            lineNumbers: 'on',
+            renderWhitespace: 'selection',
+            wordWrap: lineWrap ? 'on' : 'off',
+          }}
+        />
       </div>
     </div>
   )
