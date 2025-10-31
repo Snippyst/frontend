@@ -131,14 +131,16 @@ export function CodeEditorSection({
                 language="typst"
                 value={field.state.value}
                 onChange={(value) => field.handleChange(value || '')}
-                onMount={(editor, monaco) => {
+                beforeMount={(monaco) => {
                   registerTypstLanguage(monaco).catch(console.error)
+                }}
+                onMount={(editor, _monaco) => {
                   onEditorMount(editor)
                   editor.onDidBlurEditorText(() => {
                     field.handleBlur()
                   })
                 }}
-                theme="vs-dark"
+                theme="dark-plus"
                 options={{
                   minimap: { enabled: false },
                   fontSize: 14,

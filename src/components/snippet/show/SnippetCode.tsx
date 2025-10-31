@@ -136,10 +136,10 @@ export default function SnippetCode({ snippet }: SnippetCodeProps) {
           height="100%"
           value={snippet.content}
           language="typst"
-          onMount={(_editor, monaco) => {
+          beforeMount={(monaco) => {
             registerTypstLanguage(monaco).catch(console.error)
           }}
-          theme="vs-dark"
+          theme="dark-plus"
           options={{
             readOnly: true,
             minimap: { enabled: false },

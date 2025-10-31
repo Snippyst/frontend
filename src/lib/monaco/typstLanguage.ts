@@ -39,7 +39,7 @@ export async function registerTypstLanguage(monaco: Monaco): Promise<void> {
   highlighterPromise = (async () => {
     try {
       const highlighter = await createHighlighter({
-        themes: ['vitesse-dark', 'vitesse-light'],
+        themes: ['dark-plus', 'light-plus'],
         langs: [typstGrammar as any],
       })
 
@@ -53,6 +53,6 @@ export async function registerTypstLanguage(monaco: Monaco): Promise<void> {
 }
 
 export function setTypstTheme(monaco: Monaco, theme: 'light' | 'dark'): void {
-  const monacoTheme = theme === 'dark' ? 'vs-dark' : 'vs-light'
+  const monacoTheme = theme === 'dark' ? 'dark-plus' : 'light-plus'
   monaco.editor.setTheme(monacoTheme)
 }
