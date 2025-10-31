@@ -3,6 +3,7 @@ import { useCopyToClipboard } from '@/hooks/useCopyToClipboard'
 import { WrapText, UnfoldHorizontal } from 'lucide-react'
 import Editor from '@monaco-editor/react'
 import type { Snippet } from '@/types/snippet'
+import { registerTypstLanguage } from '@/lib/monaco/typstLanguage'
 
 interface SnippetCodeProps {
   snippet: Snippet
@@ -134,7 +135,10 @@ export default function SnippetCode({ snippet }: SnippetCodeProps) {
         <Editor
           height="100%"
           value={snippet.content}
-          language={undefined}
+          language="typst"
+          onMount={(_editor, monaco) => {
+            registerTypstLanguage(monaco).catch(console.error)
+          }}
           theme="vs-dark"
           options={{
             readOnly: true,

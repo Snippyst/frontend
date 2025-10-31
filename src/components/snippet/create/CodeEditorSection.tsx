@@ -3,6 +3,7 @@ import type { editor } from 'monaco-editor'
 import { Columns2, AlignJustify, Info, Wand2 } from 'lucide-react'
 import { TypstPreview } from '../../TypstPreview'
 import { snippetFormSchema } from '../../../lib/validation/snippetSchema'
+import { registerTypstLanguage } from '../../../lib/monaco/typstLanguage'
 
 interface CodeEditorSectionProps {
   form: any
@@ -127,9 +128,11 @@ export function CodeEditorSection({
             <div className="h-[400px] lg:h-[500px]">
               <Editor
                 height="100%"
+                language="typst"
                 value={field.state.value}
                 onChange={(value) => field.handleChange(value || '')}
-                onMount={(editor) => {
+                onMount={(editor, monaco) => {
+                  registerTypstLanguage(monaco).catch(console.error)
                   onEditorMount(editor)
                   editor.onDidBlurEditorText(() => {
                     field.handleBlur()
