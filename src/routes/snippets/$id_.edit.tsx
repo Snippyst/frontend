@@ -13,8 +13,10 @@ import {
   CodeEditorSection,
   PackagesList,
   SubmitSection,
+  VersionSelector,
 } from '../../components/snippet/create'
 import type { Tag } from '../../types/tags'
+import { AVAILABLE_TYPST_VERSIONS } from '../../lib/constants/versions'
 
 export const Route = createFileRoute('/snippets/$id_/edit')({
   loader: async ({ context, params }) => {
@@ -44,6 +46,9 @@ function RouteComponent() {
       alternateAuthor: snippet.author || '',
       packages: snippet.packages || [],
       copyRecommendation: snippet.copyRecommendation || '',
+      versions: snippet.versions && snippet.versions.length > 0
+        ? snippet.versions.map((v) => v.version)
+        : [AVAILABLE_TYPST_VERSIONS[0]],
     },
     onSubmit: async ({ value }) => {
       setSubmitError(null)
@@ -82,6 +87,13 @@ function RouteComponent() {
         }
         if (value.alternateAuthor !== (snippet.author || '')) {
           changes.author = value.alternateAuthor || undefined
+        }
+        const currentVersions = snippet.versions && snippet.versions.length > 0
+          ? snippet.versions.map((v) => v.version).sort()
+          : [AVAILABLE_TYPST_VERSIONS[0]]
+        const newVersions = [...value.versions].sort()
+        if (JSON.stringify(currentVersions) !== JSON.stringify(newVersions)) {
+          changes.versions = value.versions
         }
 
         if (Object.keys(changes).length === 0) {
@@ -173,6 +185,15 @@ function RouteComponent() {
             navigate({ to: '/tags/new', search: { prefillTagName: tagSearch } })
           }
         />
+
+        <form.Field name="versions">
+          {(field: any) => (
+            <VersionSelector
+              selectedVersions={field.state.value}
+              onChange={field.handleChange}
+            />
+          )}
+        </form.Field>
 
         <CodeEditorSection
           form={form}

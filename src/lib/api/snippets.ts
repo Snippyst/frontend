@@ -29,6 +29,7 @@ export interface CreateSnippetParams {
   }>
   copyRecommendation?: string
   author?: string
+  versions?: string[]
 }
 
 export interface SearchSuggestionsResponse {
@@ -228,6 +229,7 @@ export interface UpdateSnippetParams {
   }>
   copyRecommendation?: string
   author?: string
+  versions?: string[]
 }
 
 export async function updateSnippet(

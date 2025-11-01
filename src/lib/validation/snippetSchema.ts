@@ -29,6 +29,9 @@ export const snippetFormSchema = z.object({
     }),
   ),
   copyRecommendation: z.string(),
+  versions: z
+    .array(z.string())
+    .min(1, 'At least one version must be selected'),
 })
 
 export type SnippetFormValues = z.infer<typeof snippetFormSchema>

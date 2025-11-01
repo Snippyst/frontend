@@ -13,8 +13,10 @@ import {
   CodeEditorSection,
   PackagesList,
   SubmitSection,
+  VersionSelector,
 } from '../../components/snippet/create'
 import { z } from 'zod'
+import { AVAILABLE_TYPST_VERSIONS } from '../../lib/constants/versions'
 
 const FORM_STATE_KEY = 'snippetFormState'
 
@@ -63,6 +65,7 @@ function RouteComponent() {
         version: string
       }>,
       copyRecommendation: '',
+      versions: [AVAILABLE_TYPST_VERSIONS[0]],
     },
     onSubmit: async ({ value }) => {
       setSubmitError(null)
@@ -82,6 +85,7 @@ function RouteComponent() {
           packages: value.packages,
           copyRecommendation: value.copyRecommendation,
           author: value.alternateAuthor || undefined,
+          versions: value.versions,
         })
         sessionStorage.removeItem(FORM_STATE_KEY)
         navigate({ to: `/snippets/${createdSnippet.id}` })
@@ -187,6 +191,15 @@ function RouteComponent() {
             navigate({ to: '/tags/new', search: { prefillTagName: tagSearch } })
           }
         />
+
+        <form.Field name="versions">
+          {(field: any) => (
+            <VersionSelector
+              selectedVersions={field.state.value}
+              onChange={field.handleChange}
+            />
+          )}
+        </form.Field>
 
         <CodeEditorSection
           form={form}
