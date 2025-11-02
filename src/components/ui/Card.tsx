@@ -19,7 +19,8 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
       <div
         ref={ref}
         className={cn(
-          hover ? 'card-hover' : 'card',
+          'rounded-lg border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 shadow-sm',
+          hover && 'transition-shadow hover:shadow-lg dark:hover:shadow-xl',
           paddingStyles[padding],
           className,
         )}
@@ -56,7 +57,7 @@ export const CardTitle = forwardRef<HTMLHeadingElement, CardTitleProps>(
     return (
       <Component
         ref={ref}
-        className={cn('text-2xl font-bold text-text-primary mb-2', className)}
+        className={cn('text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2', className)}
         {...props}
       >
         {children}
@@ -77,7 +78,7 @@ export const CardDescription = forwardRef<
   return (
     <p
       ref={ref}
-      className={cn('text-text-secondary text-sm', className)}
+      className={cn('text-gray-600 dark:text-gray-400 text-sm', className)}
       {...props}
     >
       {children}
@@ -108,7 +109,7 @@ export const CardFooter = forwardRef<HTMLDivElement, CardFooterProps>(
     return (
       <div
         ref={ref}
-        className={cn('mt-6 pt-6 border-t border-border-primary', className)}
+        className={cn('mt-6 pt-6 border-t border-gray-200 dark:border-gray-700', className)}
         {...props}
       >
         {children}
