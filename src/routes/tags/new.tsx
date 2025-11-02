@@ -8,6 +8,7 @@ import { z } from 'zod'
 
 const tagNewSearchSchema = z.object({
   prefillTagName: z.string().optional(),
+  returnTo: z.string().optional(),
 })
 
 export const Route = createFileRoute('/tags/new')({
@@ -17,7 +18,7 @@ export const Route = createFileRoute('/tags/new')({
 
 function RouteComponent() {
   const navigate = useNavigate()
-  const { prefillTagName } = Route.useSearch()
+  const { prefillTagName, returnTo } = Route.useSearch()
   const [submitError, setSubmitError] = useState<string | null>(null)
 
   const form = useForm({
@@ -32,7 +33,7 @@ function RouteComponent() {
           name: value.name,
           description: value.description || undefined,
         })
-        navigate({ to: '/snippets/new' })
+        navigate({ to: returnTo || '/snippets/new' })
       } catch (error) {
         const errorMessage =
           error instanceof Error
@@ -173,7 +174,7 @@ function RouteComponent() {
             <div className="flex justify-end gap-3">
               <button
                 type="button"
-                onClick={() => navigate({ to: '/snippets/new' })}
+                onClick={() => navigate({ to: returnTo || '/snippets/new' })}
                 disabled={state[1]}
                 className="rounded-md border border-gray-300 bg-white px-5 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:focus:ring-blue-400 dark:focus:ring-offset-gray-900"
               >

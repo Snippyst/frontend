@@ -117,7 +117,7 @@ function RouteComponent() {
 
   useEffect(() => {
     return () => {
-      if (router.state.location.pathname !== '/tags/new') {
+      if (!router.state.location.pathname.startsWith('/tags/new')) {
         sessionStorage.removeItem(FORM_STATE_KEY)
       }
     }
@@ -188,7 +188,13 @@ function RouteComponent() {
           loadingTags={loadingTags}
           onTagSearch={setTagSearch}
           onCreateTag={() =>
-            navigate({ to: '/tags/new', search: { prefillTagName: tagSearch } })
+            navigate({
+              to: '/tags/new',
+              search: {
+                prefillTagName: tagSearch,
+                returnTo: '/snippets/new'
+              }
+            })
           }
         />
 
