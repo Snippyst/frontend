@@ -45,7 +45,9 @@ export async function handleOAuthCallback(
   })
 
   if (!response.ok) {
-    throw new Error(`OAuth callback failed: ${response.statusText}`)
+    throw new Error(
+      `OAuth callback failed: ${(await response.json()).message || response.statusText}`,
+    )
   }
 
   setAuthCookie(true)

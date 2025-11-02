@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Github, Mail } from 'lucide-react'
+import { SiCodeberg, SiDiscord, SiGithub } from 'react-icons/si'
 import { useState } from 'react'
 import { initOAuthRedirectUrl } from '../../lib/api/auth'
 import {
@@ -30,8 +30,9 @@ function RouteComponent() {
   }
 
   const availableProviders = [
-    { name: 'GitHub', id: 'github', icon: <Github size={20} /> },
-    { name: 'Discord', id: 'discord', icon: <Mail size={20} /> },
+    { name: 'GitHub', id: 'github', icon: <SiGithub size={20} /> },
+    { name: 'Discord', id: 'discord', icon: <SiDiscord size={20} /> },
+    { name: 'Codeberg', id: 'codeberg', icon: <SiCodeberg size={20} /> },
   ]
 
   return (
