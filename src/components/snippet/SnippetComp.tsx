@@ -53,11 +53,33 @@ export default function SnippetComp({ snippet }: { snippet: Snippet }) {
               <>
                 By {snippet.author} <br />
                 {snippet.createdBy?.username && (
-                  <> (Uploaded by {snippet.createdBy.username})</>
+                  <>
+                    {' '}
+                    (Uploaded by{' '}
+                    <Link
+                      to="/snippets"
+                      search={{ userId: snippet.createdBy.id }}
+                      className="hover:underline"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {snippet.createdBy.username}
+                    </Link>
+                    )
+                  </>
                 )}
               </>
             ) : (
-              <>Created by {snippet.createdBy?.username}</>
+              <>
+                Created by{' '}
+                <Link
+                  to="/snippets"
+                  search={{ userId: snippet.createdBy?.id }}
+                  className="hover:underline"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {snippet.createdBy?.username}
+                </Link>
+              </>
             )}
           </p>
         </Link>

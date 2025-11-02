@@ -167,9 +167,7 @@ export function CodeEditorSection({
                 Preview
               </h3>
               <p className="mt-0.5 text-xs text-gray-600 dark:text-gray-400">
-                Preview may differ from final render. The selected version is
-                not reflected here. You can also send it with compilation
-                errors.
+                Preview may differ from final render.
               </p>
             </div>
             <div className="h-[400px] lg:h-[500px]">

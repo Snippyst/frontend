@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { TypstCompiler, TypstRenderer } from '@myriaddreamin/typst.ts'
 import { useContentZoom } from '@/hooks/useContentZoom'
+import { CompileFormatEnum } from '@myriaddreamin/typst.ts/compiler'
 
 let createTypstCompiler: any
 let createTypstRenderer: any
@@ -130,7 +131,7 @@ export function TypstPreview({ code, className = '' }: TypstPreviewProps) {
 
         const result = await compiler.compile({
           mainFilePath: '/main.typ',
-          format: 'vector',
+          format: CompileFormatEnum.vector,
         })
 
         if (!result.result) {

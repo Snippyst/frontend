@@ -1,6 +1,6 @@
-import TagComp from '../TagComp'
 import VoteButton from '../VoteButton'
 import type { Snippet } from '@/types/snippet'
+import { Link } from '@tanstack/react-router'
 
 interface SnippetInfoProps {
   snippet: Snippet
@@ -29,18 +29,32 @@ export default function SnippetInfo({ snippet }: SnippetInfoProps) {
           <span className="font-medium text-gray-700 dark:text-gray-300">
             Created by:
           </span>{' '}
-          <span className="text-gray-900 dark:text-gray-100">
-            {snippet.author || snippet.createdBy.username}
-          </span>
+          {snippet.author ? (
+            <span className="text-gray-900 dark:text-gray-100">
+              {snippet.author}
+            </span>
+          ) : (
+            <Link
+              to="/snippets"
+              search={{ userId: snippet.createdBy.id }}
+              className="text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              {snippet.createdBy.username}
+            </Link>
+          )}
           <div />
           {snippet.author && (
             <>
               <span className="font-medium text-gray-700 dark:text-gray-300">
                 Uploaded by:
               </span>{' '}
-              <span className="text-gray-900 dark:text-gray-100">
+              <Link
+                to="/snippets"
+                search={{ userId: snippet.createdBy.id }}
+                className="text-blue-600 dark:text-blue-400 hover:underline"
+              >
                 {snippet.createdBy.username}
-              </span>
+              </Link>
             </>
           )}
         </div>
@@ -71,16 +85,18 @@ export default function SnippetInfo({ snippet }: SnippetInfoProps) {
             </div>
             <div className="flex flex-wrap gap-1">
               {snippet.versions.map((v, idx) => (
-                <span
+                <Link
                   key={idx}
-                  className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-mono ${
+                  to="/snippets"
+                  search={{ versions: [v.version] }}
+                  className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-mono transition-opacity hover:opacity-80 ${
                     v.success
                       ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border border-green-300 dark:border-green-700'
                       : 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border border-red-300 dark:border-red-700'
                   }`}
                 >
                   {v.version}
-                </span>
+                </Link>
               ))}
             </div>
           </div>
@@ -94,7 +110,14 @@ export default function SnippetInfo({ snippet }: SnippetInfoProps) {
           </span>
           <div className="flex flex-wrap gap-2">
             {snippet.tags.map((tag) => (
-              <TagComp key={tag.id} tag={tag} />
+              <Link
+                key={tag.id}
+                to="/snippets"
+                search={{ tags: [tag.id] }}
+                className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors"
+              >
+                {tag.name}
+              </Link>
             ))}
           </div>
         </div>
@@ -115,12 +138,14 @@ export default function SnippetInfo({ snippet }: SnippetInfoProps) {
           </span>
           <div className="space-y-1">
             {snippet.packages.map((pkg, idx) => (
-              <div
+              <Link
                 key={idx}
-                className="text-sm text-gray-700 dark:text-gray-300 font-mono bg-gray-50 dark:bg-gray-900 px-2 py-1 rounded"
+                to="/snippets"
+                search={{ packages: `${pkg.namespace}/${pkg.name}` }}
+                className="block text-sm text-gray-700 dark:text-gray-300 font-mono bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 px-2 py-1 rounded transition-colors"
               >
                 {pkg.namespace}/{pkg.name}@{pkg.version}
-              </div>
+              </Link>
             ))}
           </div>
         </div>

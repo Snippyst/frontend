@@ -27,7 +27,10 @@ export function VersionSelector({
       </h2>
       <p className="mb-3 text-xs text-gray-600 dark:text-gray-400">
         Select one or more Typst versions to validate your snippet against. At
-        least one version must be selected.
+        least one version must be selected. The selected version is not
+        reflected in the editor. The preview renders with the latest available
+        version of Typst. If your snippet only works with an older version, you
+        may submit it with compilation errors.
       </p>
       <div className="flex flex-wrap gap-2">
         {AVAILABLE_TYPST_VERSIONS.map((version) => {

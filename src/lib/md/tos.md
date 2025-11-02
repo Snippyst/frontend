@@ -20,7 +20,7 @@ Thank you for using Snippyst! We're happy you're here. Please read this Terms of
 
 ## The Snippyst Terms of Service
 
-Effective date: October 26, 2025
+Effective date: November 2, 2025
 
 ## A. Definitions
 
@@ -218,3 +218,90 @@ Throughout this Agreement, each section includes titles and brief summaries of t
 If any part of this Agreement is held invalid or unenforceable, that portion of the Agreement will be construed to reflect the parties’ original intent. The remaining portions will remain in full force and effect. Any failure on the part of Snippyst to enforce any provision of this Agreement will not be considered a waiver of our right to enforce such provision. Our rights under this Agreement will survive any termination of this Agreement.
 
 Source: https://github.com/github/site-policy
+
+# 1. Compliance with Laws and Regulations
+
+You are responsible for using the Service in compliance with all applicable laws, regulations, and all of our Acceptable Use Policies. These policies may be updated from time to time and are provided below.
+
+## 2. User Safety
+
+We do not allow content or activity on Snippyst that:
+
+<!-- markdownlint-disable GHD034 -->
+
+- is unlawful or promotes unlawful activities;
+
+- is sexually obscene or relates to sexual exploitation or abuse, including of minors;
+
+- is libelous, defamatory, or fraudulent;
+
+- is discriminatory or abusive toward any individual or group;
+
+- is false, inaccurate, or intentionally deceptive information and likely to adversely affect the public interest (including health, safety, election integrity, and civic participation);
+
+- harasses or abuses another individual or group, including our employees, officers, and agents, or other users;
+
+- threatens or incites violence toward any individual or group, especially on the basis of who they are;
+
+- gratuitously depicts or glorifies violence, including violent images; or
+
+- is off-topic, or interacts with platform features in a way that significantly or repeatedly disrupts the experience of other users.
+
+## 3. Intellectual Property, Authenticity, and Private Information
+
+We do not allow content or activity on Snippyst that:
+
+- infringes any proprietary right of any party, including patent, trademark, trade secret, copyright, right of publicity, or other right;
+
+- unlawfully shares unauthorized product licensing keys, software for generating unauthorized product licensing keys, or software for bypassing checks for product licensing keys, including extension of a free license beyond its trial period;
+
+- impersonates any person or entity, including any of our employees or representatives, including through false association with Snippyst, or by fraudulently misrepresenting your identity or site's purpose; or
+
+- violates the privacy of any third party, such as by posting another person's personal information without consent.
+
+## 4. Spam and Inauthentic Activity on Snippyst
+
+We do not allow content or activity on Snippyst that is:
+
+- automated excessive bulk activity and coordinated inauthentic activity, such as
+  - spamming
+  - cryptocurrency mining;
+- bulk distribution of promotions and advertising prohibited by Snippyst terms and policies;
+- inauthentic interactions, such as fake accounts and automated inauthentic activity;
+- rank abuse, such as automated starring or following;
+- creation of or participation in secondary markets for the purpose of the proliferation of inauthentic activity;
+- using Snippyst as a platform for propagating abuse on other platforms;
+- phishing or attempted phishing; or
+- using our servers for any form of excessive automated bulk activity, to place undue burden on our servers through automated means, or to relay any form of unsolicited advertising or solicitation through our servers, such as get-rich-quick schemes;
+- incentivized by (or incentivizes inauthentic engagement with) rewards such as cryptocurrency airdrops, tokens, credits, gifts or other give-aways.
+
+## 5. Site Access and Safety
+
+We do not allow content or activity on Snippyst that:
+
+- directly supports unlawful active attack or malware campaigns that are causing technical harms — such as using our platform to deliver malicious executables or as attack infrastructure, for example by organizing denial of service attacks or managing command and control servers — with no implicit or explicit dual-use purpose prior to the abuse occurring; or
+- uses our servers to disrupt or to attempt to disrupt, or to gain or to attempt to gain unauthorized access to, any service, device, data, account or network.
+
+<!-- markdownlint-enable GHD034 -->
+
+## 6. Privacy
+
+Misuse of personal information is prohibited.
+
+Any person, entity, or service collecting data from the Service must comply with the Snippyst Privacy Statement, particularly in regards to the collection of personal information. If you collect any personal information from the Service, you agree that you will only use that personal information for the purpose for which that User has authorized it. You agree that you will reasonably secure any personal information you have gathered from the Service, and you will respond promptly to complaints, removal requests, and "do not contact" requests from us or other users.
+
+## 7. Excessive Bandwidth Use
+
+The Service's bandwidth limitations vary based on the features you use. If we determine your bandwidth usage to be significantly excessive in relation to other users of similar features, we reserve the right to suspend your Account, throttle your file hosting, or otherwise limit your activity until you can reduce your bandwidth consumption. We also reserve the right—after providing advance notice—to delete repositories that we determine to be placing undue strain on our infrastructure.
+
+## 8. Advertising on Snippyst
+
+You may not use Snippyst to advertise or promote products or services unless you have our prior written consent.
+
+## 9. User Protection
+
+You must not engage in activity that significantly harms other users.
+
+We will interpret our policies and resolve disputes in favor of protecting users as a whole.
+
+Source: https://github.com/github/site-policy/
