@@ -57,6 +57,21 @@ export default function SnippetInfo({ snippet }: SnippetInfoProps) {
               </Link>
             </>
           )}
+          {/* For now we use lastUpdatedAt. Later use updatedAt. Thus not added to the types */}
+          {/* @ts-ignore */}
+          {snippet.lastUpdatedAt && (
+            <>
+              <div>
+                <span className="font-medium text-gray-700 dark:text-gray-300">
+                  Last updated:
+                </span>{' '}
+                <span className="text-gray-600 dark:text-gray-400">
+                  {/* @ts-ignore */}
+                  {new Date(snippet.lastUpdatedAt).toLocaleDateString()}
+                </span>
+              </div>
+            </>
+          )}
         </div>
 
         {snippet.updatedAt && (
@@ -141,7 +156,15 @@ export default function SnippetInfo({ snippet }: SnippetInfoProps) {
               <Link
                 key={idx}
                 to="/snippets"
-                search={{ packages: `${pkg.namespace}/${pkg.name}` }}
+                search={{
+                  packages: JSON.stringify([
+                    {
+                      namespace: pkg.namespace,
+                      name: pkg.name,
+                      version: pkg.version,
+                    },
+                  ]),
+                }}
                 className="block text-sm text-gray-700 dark:text-gray-300 font-mono bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 px-2 py-1 rounded transition-colors"
               >
                 {pkg.namespace}/{pkg.name}@{pkg.version}

@@ -75,7 +75,16 @@ export default function SnippetComp({ snippet }: { snippet: Snippet }) {
                   to="/snippets"
                   search={{ userId: snippet.createdBy?.id }}
                   className="hover:underline"
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={(e) => {
+                    // TODO needs to be better handeled
+                    e.stopPropagation()
+                    e.preventDefault()
+                    const id = snippet.createdBy?.id
+                    const query = id
+                      ? `?userId=${encodeURIComponent(String(id))}`
+                      : ''
+                    window.location.href = `/snippets${query}`
+                  }}
                 >
                   {snippet.createdBy?.username}
                 </Link>

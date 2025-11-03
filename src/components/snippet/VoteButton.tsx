@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { ArrowUp } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { Snippet } from '@/types/snippet'
+import { useNavigate } from 'node_modules/@tanstack/react-router/dist/esm/useNavigate'
 
 interface VoteButtonProps {
   snippet: Snippet
@@ -20,6 +21,7 @@ export default function VoteButton({
   const [isUpvoted, setIsUpvoted] = useState(initialIsUpvoted)
   const [upvotes, setUpvotes] = useState(initialUpvotes)
   const { isAuthenticated } = useAuth()
+  const navigate = useNavigate()
 
   useEffect(() => {
     setIsUpvoted(snippet.isUpvoted ?? false)
@@ -29,7 +31,10 @@ export default function VoteButton({
     e.preventDefault()
     e.stopPropagation()
 
-    if (!isAuthenticated) return
+    if (!isAuthenticated) {
+      await navigate({ to: '/auth/login' })
+      return
+    }
 
     voteMutation.mutate(!isUpvoted)
   }
@@ -71,11 +76,10 @@ export default function VoteButton({
   return (
     <button
       onClick={handleVote}
-      disabled={voteMutation.isPending}
       className={`
         flex items-center gap-1 rounded px-3 py-1.5 text-sm font-medium
         ${voteMutation.isPending ? 'cursor-not-allowed opacity-50' : 'hover:bg-gray-200 dark:hover:bg-gray-700'}
-        ${!isAuthenticated ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}
+        ${!isAuthenticated ? 'opacity-60 ' : 'cursor-pointer'}
         ${isUpvoted ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-200'}
       `}
       title={
