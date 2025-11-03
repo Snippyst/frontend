@@ -90,7 +90,8 @@ export default function MultiSelect<T extends MultiSelectItem>({
       <button
         key={item.id}
         type="button"
-        onClick={() => {
+        onMouseDown={(e) => {
+          e.preventDefault()
           if (!isSelected) {
             toggleItem(item)
           }
@@ -165,7 +166,8 @@ export default function MultiSelect<T extends MultiSelectItem>({
                   {onCreateNew && (
                     <button
                       type="button"
-                      onClick={() => {
+                      onMouseDown={(e) => {
+                        e.preventDefault()
                         onCreateNew()
                         setIsDropdownOpen(false)
                       }}
@@ -192,7 +194,8 @@ export default function MultiSelect<T extends MultiSelectItem>({
                   {onCreateNew && (
                     <button
                       type="button"
-                      onClick={() => {
+                      onMouseDown={(e) => {
+                        e.preventDefault()
                         onCreateNew()
                         setIsDropdownOpen(false)
                       }}
