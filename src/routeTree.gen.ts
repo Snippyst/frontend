@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TosRouteImport } from './routes/tos'
+import { Route as Sitemap_snippetsDotxmlRouteImport } from './routes/sitemap_snippets[.]xml'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
@@ -30,6 +31,11 @@ import { Route as AuthProviderCallbackRouteImport } from './routes/auth/$provide
 const TosRoute = TosRouteImport.update({
   id: '/tos',
   path: '/tos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Sitemap_snippetsDotxmlRoute = Sitemap_snippetsDotxmlRouteImport.update({
+  id: '/sitemap_snippets.xml',
+  path: '/sitemap_snippets.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -118,6 +124,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/privacy': typeof PrivacyRoute
+  '/sitemap_snippets.xml': typeof Sitemap_snippetsDotxmlRoute
   '/tos': typeof TosRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/me': typeof AuthMeRoute
@@ -137,6 +144,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/privacy': typeof PrivacyRoute
+  '/sitemap_snippets.xml': typeof Sitemap_snippetsDotxmlRoute
   '/tos': typeof TosRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/me': typeof AuthMeRoute
@@ -157,6 +165,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/privacy': typeof PrivacyRoute
+  '/sitemap_snippets.xml': typeof Sitemap_snippetsDotxmlRoute
   '/tos': typeof TosRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/me': typeof AuthMeRoute
@@ -178,6 +187,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/privacy'
+    | '/sitemap_snippets.xml'
     | '/tos'
     | '/auth/login'
     | '/auth/me'
@@ -197,6 +207,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/privacy'
+    | '/sitemap_snippets.xml'
     | '/tos'
     | '/auth/login'
     | '/auth/me'
@@ -216,6 +227,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/privacy'
+    | '/sitemap_snippets.xml'
     | '/tos'
     | '/auth/login'
     | '/auth/me'
@@ -236,6 +248,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
   PrivacyRoute: typeof PrivacyRoute
+  Sitemap_snippetsDotxmlRoute: typeof Sitemap_snippetsDotxmlRoute
   TosRoute: typeof TosRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthMeRoute: typeof AuthMeRoute
@@ -258,6 +271,13 @@ declare module '@tanstack/react-router' {
       path: '/tos'
       fullPath: '/tos'
       preLoaderRoute: typeof TosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap_snippets.xml': {
+      id: '/sitemap_snippets.xml'
+      path: '/sitemap_snippets.xml'
+      fullPath: '/sitemap_snippets.xml'
+      preLoaderRoute: typeof Sitemap_snippetsDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -380,6 +400,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
   PrivacyRoute: PrivacyRoute,
+  Sitemap_snippetsDotxmlRoute: Sitemap_snippetsDotxmlRoute,
   TosRoute: TosRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthMeRoute: AuthMeRoute,

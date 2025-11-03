@@ -2,3 +2,5 @@
 User-agent: *
 Allow: /
 Disallow: /moderation
+Sitemap: https://snippyst.com/sitemap.xml
+Sitemap: https://snippyst.com/sitemap_snippets.xml
