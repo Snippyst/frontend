@@ -2,8 +2,7 @@
 
 ## Snippyst Privacy Statement
 
-Effective date: November 2, 2025\
-Here's a rewritten and restructured Privacy Policy for Snippyst:
+Effective date: November 3, 2025\
 
 This Privacy Policy outlines what personal and technical information Snippyst collects, how we use it, where it's stored, and what rights you have regarding your data. We're committed to protecting your privacy and being transparent about our data practices.
 
@@ -41,7 +40,7 @@ When you sign up for Snippyst, we collect and store:
 - Display name
 - Your social login identifier
 - Code snippets you create
-- Actions you take on the platform (e.g., creating, editing, voting and/or deleting snippets)
+- Actions you take on the platform (e.g., creating, editing, voting and/or deleting snippets, creating or deleting comments)
 - Any files or metadata associated with your snippets
 
 **Data Storage (netcup)**
