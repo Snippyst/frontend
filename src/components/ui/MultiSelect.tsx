@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { X, Plus } from 'lucide-react'
 
 export interface MultiSelectItem {
@@ -39,6 +39,26 @@ export default function MultiSelect<T extends MultiSelectItem>({
 }: MultiSelectProps<T>) {
   const [searchQuery, setSearchQuery] = useState('')
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false)
+      }
+    }
+
+    if (isDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside)
+      }
+    }
+  }, [isDropdownOpen])
 
   const toggleItem = (item: T) => {
     const isSelected = selectedItems.some((selected) => selected.id === item.id)
@@ -57,8 +77,23 @@ export default function MultiSelect<T extends MultiSelectItem>({
 
   const handleSearchChange = (query: string) => {
     setSearchQuery(query)
+    setIsDropdownOpen(true)
     if (onSearch) {
       onSearch(query)
+    }
+  }
+
+  const handleSelectItem = (item: T) => {
+    if (!selectedItems.some((selected) => selected.id === item.id)) {
+      toggleItem(item)
+    }
+    setSearchQuery('')
+    inputRef.current?.focus()
+  }
+
+  const handleCreateNew = () => {
+    if (onCreateNew) {
+      onCreateNew()
     }
   }
 
@@ -90,19 +125,12 @@ export default function MultiSelect<T extends MultiSelectItem>({
       <button
         key={item.id}
         type="button"
-        onMouseDown={(e) => {
-          e.preventDefault()
-          if (!isSelected) {
-            toggleItem(item)
-          }
-          setSearchQuery('')
-          setIsDropdownOpen(false)
-        }}
+        onClick={() => handleSelectItem(item)}
         disabled={isSelected}
-        className={`w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-600 ${
+        className={`w-full px-4 py-2 text-left text-sm transition-colors ${
           isSelected
             ? 'cursor-not-allowed bg-gray-50 text-gray-400 dark:bg-gray-800 dark:text-gray-500'
-            : 'text-gray-900 dark:text-gray-100'
+            : 'text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-600'
         }`}
       >
         <div className="font-medium">{item.name}</div>
@@ -124,7 +152,7 @@ export default function MultiSelect<T extends MultiSelectItem>({
             {label}
           </label>
         )}
-        <div className="relative">
+        <div className="relative" ref={dropdownRef}>
           {selectedItems.length > 0 && (
             <div className="mb-2 flex flex-wrap gap-2">
               {selectedItems.map((item) => (
@@ -145,13 +173,11 @@ export default function MultiSelect<T extends MultiSelectItem>({
             </div>
           )}
           <input
+            ref={inputRef}
             type="text"
             value={searchQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
             onFocus={() => setIsDropdownOpen(true)}
-            onBlur={() => {
-              setTimeout(() => setIsDropdownOpen(false), 200)
-            }}
             className="mt-1.5 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-500 dark:focus:border-blue-400 dark:focus:ring-blue-400"
             placeholder={searchPlaceholder}
           />
@@ -166,12 +192,8 @@ export default function MultiSelect<T extends MultiSelectItem>({
                   {onCreateNew && (
                     <button
                       type="button"
-                      onMouseDown={(e) => {
-                        e.preventDefault()
-                        onCreateNew()
-                        setIsDropdownOpen(false)
-                      }}
-                      className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-600 text-blue-600 dark:text-blue-400 font-medium flex items-center gap-2"
+                      onClick={handleCreateNew}
+                      className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-600 text-blue-600 dark:text-blue-400 font-medium flex items-center gap-2 transition-colors"
                     >
                       <Plus className="h-4 w-4" />
                       {createNewLabel}
@@ -194,12 +216,8 @@ export default function MultiSelect<T extends MultiSelectItem>({
                   {onCreateNew && (
                     <button
                       type="button"
-                      onMouseDown={(e) => {
-                        e.preventDefault()
-                        onCreateNew()
-                        setIsDropdownOpen(false)
-                      }}
-                      className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-600 text-blue-600 dark:text-blue-400 font-medium flex items-center gap-2 border-b border-gray-200 dark:border-gray-600"
+                      onClick={handleCreateNew}
+                      className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-600 text-blue-600 dark:text-blue-400 font-medium flex items-center gap-2 border-t border-gray-200 dark:border-gray-600 transition-colors"
                     >
                       <Plus className="h-4 w-4" />
                       {createNewLabel}
