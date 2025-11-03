@@ -76,6 +76,7 @@ export default function VoteButton({
   return (
     <button
       onClick={handleVote}
+      disabled={voteMutation.isPending}
       className={`
         flex items-center gap-1 rounded px-3 py-1.5 text-sm font-medium
         ${voteMutation.isPending ? 'cursor-not-allowed opacity-50' : 'hover:bg-gray-200 dark:hover:bg-gray-700'}
