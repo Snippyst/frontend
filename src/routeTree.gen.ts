@@ -23,6 +23,7 @@ import { Route as SnippetsIdRouteImport } from './routes/snippets/$id'
 import { Route as ModerationUsersRouteImport } from './routes/moderation/users'
 import { Route as ModerationTagsRouteImport } from './routes/moderation/tags'
 import { Route as ModerationSnippetsRouteImport } from './routes/moderation/snippets'
+import { Route as ModerationCommentsRouteImport } from './routes/moderation/comments'
 import { Route as AuthMeRouteImport } from './routes/auth/me'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as SnippetsIdEditRouteImport } from './routes/snippets/$id_.edit'
@@ -98,6 +99,11 @@ const ModerationSnippetsRoute = ModerationSnippetsRouteImport.update({
   path: '/moderation/snippets',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ModerationCommentsRoute = ModerationCommentsRouteImport.update({
+  id: '/moderation/comments',
+  path: '/moderation/comments',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthMeRoute = AuthMeRouteImport.update({
   id: '/auth/me',
   path: '/auth/me',
@@ -128,6 +134,7 @@ export interface FileRoutesByFullPath {
   '/tos': typeof TosRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/me': typeof AuthMeRoute
+  '/moderation/comments': typeof ModerationCommentsRoute
   '/moderation/snippets': typeof ModerationSnippetsRoute
   '/moderation/tags': typeof ModerationTagsRoute
   '/moderation/users': typeof ModerationUsersRoute
@@ -148,6 +155,7 @@ export interface FileRoutesByTo {
   '/tos': typeof TosRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/me': typeof AuthMeRoute
+  '/moderation/comments': typeof ModerationCommentsRoute
   '/moderation/snippets': typeof ModerationSnippetsRoute
   '/moderation/tags': typeof ModerationTagsRoute
   '/moderation/users': typeof ModerationUsersRoute
@@ -169,6 +177,7 @@ export interface FileRoutesById {
   '/tos': typeof TosRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/me': typeof AuthMeRoute
+  '/moderation/comments': typeof ModerationCommentsRoute
   '/moderation/snippets': typeof ModerationSnippetsRoute
   '/moderation/tags': typeof ModerationTagsRoute
   '/moderation/users': typeof ModerationUsersRoute
@@ -191,6 +200,7 @@ export interface FileRouteTypes {
     | '/tos'
     | '/auth/login'
     | '/auth/me'
+    | '/moderation/comments'
     | '/moderation/snippets'
     | '/moderation/tags'
     | '/moderation/users'
@@ -211,6 +221,7 @@ export interface FileRouteTypes {
     | '/tos'
     | '/auth/login'
     | '/auth/me'
+    | '/moderation/comments'
     | '/moderation/snippets'
     | '/moderation/tags'
     | '/moderation/users'
@@ -231,6 +242,7 @@ export interface FileRouteTypes {
     | '/tos'
     | '/auth/login'
     | '/auth/me'
+    | '/moderation/comments'
     | '/moderation/snippets'
     | '/moderation/tags'
     | '/moderation/users'
@@ -252,6 +264,7 @@ export interface RootRouteChildren {
   TosRoute: typeof TosRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthMeRoute: typeof AuthMeRoute
+  ModerationCommentsRoute: typeof ModerationCommentsRoute
   ModerationSnippetsRoute: typeof ModerationSnippetsRoute
   ModerationTagsRoute: typeof ModerationTagsRoute
   ModerationUsersRoute: typeof ModerationUsersRoute
@@ -364,6 +377,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ModerationSnippetsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/moderation/comments': {
+      id: '/moderation/comments'
+      path: '/moderation/comments'
+      fullPath: '/moderation/comments'
+      preLoaderRoute: typeof ModerationCommentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth/me': {
       id: '/auth/me'
       path: '/auth/me'
@@ -404,6 +424,7 @@ const rootRouteChildren: RootRouteChildren = {
   TosRoute: TosRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthMeRoute: AuthMeRoute,
+  ModerationCommentsRoute: ModerationCommentsRoute,
   ModerationSnippetsRoute: ModerationSnippetsRoute,
   ModerationTagsRoute: ModerationTagsRoute,
   ModerationUsersRoute: ModerationUsersRoute,

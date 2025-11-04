@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Navigate } from '@tanstack/react-router'
 import { useAuth } from '@/hooks/useAuth'
-import { Tag, FileCode, Users } from 'lucide-react'
+import { Tag, FileCode, Users, MessageSquare } from 'lucide-react'
 import { PageHeader } from '@/components/moderation/PageHeader'
 
 export const Route = createFileRoute('/moderation/')({
@@ -19,6 +19,8 @@ function RouteComponent() {
     abilities.includes('tags:update') || abilities.includes('tags:delete')
   const hasSnippets = abilities.includes('snippets:manage')
   const hasUsers = abilities.includes('users:manage')
+  const hasComments =
+    abilities.includes('comments:manage') && abilities.includes('users:manage')
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
@@ -94,9 +96,30 @@ function RouteComponent() {
             </div>
           </Link>
         )}
+
+        {hasComments && (
+          <Link
+            to="/moderation/comments"
+            className="group rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-all hover:border-gray-300 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:border-gray-600"
+          >
+            <div className="flex items-center gap-4">
+              <div className="rounded-md bg-gray-100 p-3 dark:bg-gray-700">
+                <MessageSquare className="w-6 h-6 text-gray-700 dark:text-gray-300" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900 dark:text-gray-100">
+                  User Comments
+                </h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Manage user comments
+                </p>
+              </div>
+            </div>
+          </Link>
+        )}
       </div>
 
-      {!hasTags && !hasSnippets && !hasUsers && (
+      {!hasTags && !hasSnippets && !hasUsers && !hasComments && (
         <div className="text-center py-12">
           <p className="text-sm text-gray-600 dark:text-gray-400">
             You don't have any moderation permissions.
