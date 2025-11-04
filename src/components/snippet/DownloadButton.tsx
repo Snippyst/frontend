@@ -1,6 +1,7 @@
 import { downloadPng, downloadSvg } from '@/lib/download'
 import { Snippet } from '@/types/snippet'
 import { Download } from 'lucide-react'
+import { GrDocumentDownload } from 'react-icons/gr'
 import React, { useState } from 'react'
 
 interface DownloadButtonProps {
@@ -59,7 +60,11 @@ export default function DownloadButton({
             disabled:opacity-50 disabled:cursor-not-allowed"
             title={`Download ${type.toUpperCase()}`}
           >
-            <Download size={16} />
+            {type === 'svg' ? (
+              <Download size={16} />
+            ) : (
+              <GrDocumentDownload size={16} />
+            )}
           </button>
         ) : (
           <button

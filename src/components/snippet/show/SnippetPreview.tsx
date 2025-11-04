@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSnippetZoom } from '@/hooks/useSnippetZoom'
+import { PaintBucket, Grid3x3, RotateCcw } from 'lucide-react'
 import DownloadButton from '../DownloadButton'
 import type { Snippet } from '@/types/snippet'
 
@@ -31,6 +32,18 @@ export default function SnippetPreview({
   const [isResizing, setIsResizing] = useState(false)
   const [resizeStart, setResizeStart] = useState({ x: 0, y: 0 })
   const [startDims, setStartDims] = useState({ w: 0, h: 0 })
+  const [useWhiteBackground, setUseWhiteBackground] = useState(() => {
+    if (typeof window === 'undefined') return false
+    const saved = localStorage.getItem('snippetPreviewBackground')
+    return saved === 'white'
+  })
+
+  useEffect(() => {
+    localStorage.setItem(
+      'snippetPreviewBackground',
+      useWhiteBackground ? 'white' : 'gray',
+    )
+  }, [useWhiteBackground])
 
   const {
     scale,
@@ -123,16 +136,37 @@ export default function SnippetPreview({
           Preview
         </span>
         <div className="flex items-center gap-2">
-          <DownloadButton snippet={snippet} type="svg" format="large" />
-          <DownloadButton snippet={snippet} type="png" format="large" />
+          <DownloadButton snippet={snippet} type="svg" format="small" />
+          <DownloadButton snippet={snippet} type="png" format="small" />
           <button
-            onClick={resetZoom}
-            className="text-xs px-2 py-1 bg-white dark:bg-gray-700 border
+            onClick={() => setUseWhiteBackground(!useWhiteBackground)}
+            className="p-1.5 bg-white dark:bg-gray-700 border
               border-gray-300 dark:border-gray-600 rounded
               hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700
-              dark:text-gray-300"
+              dark:text-gray-300 transition-colors"
+            title={
+              useWhiteBackground
+                ? 'Switch to gray background'
+                : 'Switch to white background'
+            }
+            aria-label="Toggle background color"
           >
-            Reset
+            {useWhiteBackground ? (
+              <Grid3x3 className="w-4 h-4" />
+            ) : (
+              <PaintBucket className="w-4 h-4" />
+            )}
+          </button>
+          <button
+            onClick={resetZoom}
+            className="p-1.5 bg-white dark:bg-gray-700 border
+              border-gray-300 dark:border-gray-600 rounded
+              hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700
+              dark:text-gray-300 transition-colors"
+            title="Reset zoom"
+            aria-label="Reset zoom"
+          >
+            <RotateCcw className="w-4 h-4" />
           </button>
           <span className="text-xs text-gray-600 dark:text-gray-400">
             {Math.round(scale * 100)}%
@@ -141,7 +175,7 @@ export default function SnippetPreview({
       </div>
       <div
         ref={containerRef}
-        className="relative overflow-hidden bg-white"
+        className={`relative overflow-hidden ${useWhiteBackground ? 'bg-white dark:bg-white' : 'bg-gray-250 dark:bg-gray-100/95'}`}
         style={{
           cursor: isDragging ? 'grabbing' : 'grab',
           height: `${previewHeight}px`,
@@ -169,14 +203,24 @@ export default function SnippetPreview({
             data={snippet.image}
             type="image/svg+xml"
             className="max-w-none"
-            style={{ pointerEvents: 'none' }}
+            style={{
+              pointerEvents: 'none',
+              filter: useWhiteBackground
+                ? ''
+                : 'drop-shadow(0 10px 20px rgba(0,0,0,0.12))',
+            }}
           >
             <img
               src={snippet.image}
               alt={snippet.title}
               className="max-w-none"
               draggable={false}
-              style={{ pointerEvents: 'none' }}
+              style={{
+                pointerEvents: 'none',
+                filter: useWhiteBackground
+                  ? ''
+                  : 'drop-shadow(0 10px 20px rgba(0,0,0,0.12))',
+              }}
             />
           </object>
         </div>
