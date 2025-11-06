@@ -24,7 +24,7 @@ export function SubmitSection({
                 Error {isEdit ? 'updating' : 'creating'} snippet
               </h3>
               <p className="mt-1 text-sm text-red-700 dark:text-red-300">
-                {submitError}
+                <pre>{submitError}</pre>
               </p>
             </div>
           </div>

@@ -2,5 +2,8 @@
 User-agent: *
 Allow: /
 Disallow: /moderation
+Disallow: /moderation/*
+Disallow: /snippets?*
+Disallow: /snippets/*?*
 Sitemap: https://snippyst.com/sitemap.xml
 Sitemap: https://snippyst.com/sitemap_snippets.xml

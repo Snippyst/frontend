@@ -61,6 +61,7 @@ export default function SnippetComp({ snippet }: { snippet: Snippet }) {
                       search={{ userId: snippet.createdBy.id }}
                       className="hover:underline"
                       onClick={(e) => e.stopPropagation()}
+                      rel="nofollow"
                     >
                       {snippet.createdBy.username}
                     </Link>
@@ -75,6 +76,7 @@ export default function SnippetComp({ snippet }: { snippet: Snippet }) {
                   to="/snippets"
                   search={{ userId: snippet.createdBy?.id }}
                   className="hover:underline"
+                  rel="nofollow"
                   onClick={(e) => {
                     // TODO needs to be better handeled
                     e.stopPropagation()

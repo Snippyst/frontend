@@ -58,7 +58,7 @@ export default function TagComp({ tag }: { tag: Tag }) {
 
   return (
     <>
-      <Link to="/snippets" search={{ tags: [tag.id] }}>
+      <Link to="/snippets" search={{ tags: [tag.id] }} rel="nofollow">
         <div
           key={tag.id}
           style={{ backgroundColor: colors.bg }}

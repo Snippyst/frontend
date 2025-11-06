@@ -38,6 +38,7 @@ export default function SnippetInfo({ snippet }: SnippetInfoProps) {
               to="/snippets"
               search={{ userId: snippet.createdBy.id }}
               className="text-blue-600 dark:text-blue-400 hover:underline"
+              rel="nofollow"
             >
               {snippet.createdBy.username}
             </Link>
@@ -52,6 +53,7 @@ export default function SnippetInfo({ snippet }: SnippetInfoProps) {
                 to="/snippets"
                 search={{ userId: snippet.createdBy.id }}
                 className="text-blue-600 dark:text-blue-400 hover:underline"
+                rel="nofollow"
               >
                 {snippet.createdBy.username}
               </Link>
@@ -109,6 +111,7 @@ export default function SnippetInfo({ snippet }: SnippetInfoProps) {
                       ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border border-green-300 dark:border-green-700'
                       : 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border border-red-300 dark:border-red-700'
                   }`}
+                  rel="nofollow"
                 >
                   {v.version}
                 </Link>
@@ -130,6 +133,7 @@ export default function SnippetInfo({ snippet }: SnippetInfoProps) {
                 to="/snippets"
                 search={{ tags: [tag.id] }}
                 className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors"
+                rel="nofollow"
               >
                 {tag.name}
               </Link>
@@ -166,6 +170,7 @@ export default function SnippetInfo({ snippet }: SnippetInfoProps) {
                   ]),
                 }}
                 className="block text-sm text-gray-700 dark:text-gray-300 font-mono bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 px-2 py-1 rounded transition-colors"
+                rel="nofollow"
               >
                 {pkg.namespace}/{pkg.name}@{pkg.version}
               </Link>
