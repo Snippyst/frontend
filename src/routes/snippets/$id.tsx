@@ -34,7 +34,8 @@ export const Route = createFileRoute('/snippets/$id')({
       return {
         meta: generateSEOMeta({
           title: 'Snippet - Snippyst',
-          description: 'View Typst snippets on Snippyst',
+          description:
+            'View Typst snippets on Snippyst. Share, create, and explore typst snippets!',
           // TODO Better placeholder image
           // image: 'https://snippyst.com/og-image.png',
           url: `https://snippyst.com/snippets/${params.id}`,
@@ -44,8 +45,8 @@ export const Route = createFileRoute('/snippets/$id')({
 
     const author = snippet.author || snippet.createdBy?.username || 'Unknown'
     const description = snippet.description
-      ? `By ${author}. ${snippet.description}`
-      : `By ${author}. A Typst snippet on Snippyst.`
+      ? `By ${author}. ${snippet.description} - Typst Snippets. ${snippet.tags && snippet.tags.length > 0 ? 'Tags: ' + snippet.tags.join(', ') + '.' : ''}`
+      : `By ${author}. A Typst snippet on Snippyst. ${snippet.tags && snippet.tags.length > 0 ? 'Tags: ' + snippet.tags.join(', ') + '.' : ''}`
 
     return {
       meta: generateSEOMeta({
