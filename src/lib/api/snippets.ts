@@ -255,3 +255,17 @@ export async function updateSnippet(
 
   return response.json()
 }
+
+export async function getRandomSnippet(): Promise<{ id: string }> {
+  const url = new URL(getApiUrl('/snippets/random'))
+
+  const response = await fetch(url.toString(), {
+    credentials: 'include',
+  })
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch random snippet: ${response.statusText}`)
+  }
+
+  return response.json()
+}
