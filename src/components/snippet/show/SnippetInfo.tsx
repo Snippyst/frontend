@@ -147,6 +147,7 @@ export default function SnippetInfo({ snippet }: SnippetInfoProps) {
           snippet={snippet}
           initialUpvotes={snippet.numberOfUpvotes ?? 0}
           initialIsUpvoted={snippet.isUpvoted ?? false}
+          variant="large"
         />
       </div>
 

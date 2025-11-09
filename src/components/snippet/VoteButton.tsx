@@ -10,12 +10,14 @@ interface VoteButtonProps {
   snippet: Snippet
   initialUpvotes: number
   initialIsUpvoted: boolean
+  variant?: 'default' | 'large'
 }
 
 export default function VoteButton({
   snippet,
   initialUpvotes,
   initialIsUpvoted,
+  variant = 'default',
 }: VoteButtonProps) {
   const queryClient = useQueryClient()
   const [isUpvoted, setIsUpvoted] = useState(initialIsUpvoted)
@@ -78,10 +80,17 @@ export default function VoteButton({
       onClick={handleVote}
       disabled={voteMutation.isPending}
       className={`
-        flex items-center gap-1 rounded px-3 py-1.5 text-sm font-medium
-        ${voteMutation.isPending ? 'cursor-not-allowed opacity-50' : 'hover:bg-gray-200 dark:hover:bg-gray-700'}
+        flex items-center gap-1 rounded font-medium
+        ${variant === 'large' ? 'px-3 py-2 text-sm gap-1.5' : 'px-3 py-1.5 text-sm'}
+        ${voteMutation.isPending ? 'cursor-not-allowed opacity-50' : 'hover:bg-gray-200 dark:hover:bg-gray-600'}
         ${!isAuthenticated ? 'opacity-60 ' : 'cursor-pointer'}
-        ${isUpvoted ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-200'}
+        ${
+          isUpvoted
+            ? 'bg-blue-600 text-white hover:bg-blue-700'
+            : variant === 'large'
+              ? 'bg-gray-300 text-gray-800 hover:bg-gray-400 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
+              : 'bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200'
+        }
       `}
       title={
         isAuthenticated
@@ -93,6 +102,7 @@ export default function VoteButton({
     >
       <ArrowUp className="h-4 w-4" />
       <span>{upvotes}</span>
+      {variant === 'large' && <span>Upvote</span>}
     </button>
   )
 }
