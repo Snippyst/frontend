@@ -9,7 +9,7 @@ export const Route = createFileRoute('/sitemap_snippets.xml')({
     handlers: {
       GET: async () => {
         const baseUrl = 'https://snippyst.com'
-        const apiBaseUrl = 'https://api.snippyst.com/v1'
+        const apiBaseUrl = 'http://app:443/v1'
 
         try {
           const now = Date.now()
