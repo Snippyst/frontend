@@ -25,6 +25,14 @@ export const Route = createFileRoute('/snippets/$id_/edit')({
   loader: async ({ params }) => {
     return await getSnippet(params.id)
   },
+  head: () => {
+    return {
+      meta: [
+        { name: 'robots', content: 'noindex, nofollow' },
+        { title: 'Edit Snippet - Snippyst' },
+      ],
+    }
+  },
   gcTime: 0,
   component: RouteComponent,
 })

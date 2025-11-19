@@ -8,6 +8,7 @@ interface SEOProps {
   tags?: string[]
   datePublished?: string
   dateModified?: string
+  noindex?: boolean
 }
 
 export function generateSEOMeta({
@@ -20,6 +21,7 @@ export function generateSEOMeta({
   tags,
   datePublished,
   dateModified,
+  noindex = false,
 }: SEOProps) {
   const meta = [
     { title },
@@ -41,6 +43,10 @@ export function generateSEOMeta({
         : 'Typst, Snippyst, Snippets, Sharing',
     },
   ]
+
+  if (noindex) {
+    meta.push({ name: 'robots', content: 'noindex, nofollow' })
+  }
 
   if (image) {
     meta.push(

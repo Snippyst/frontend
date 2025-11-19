@@ -44,7 +44,7 @@ export const Route = createFileRoute('/snippets/$id')({
     const author = snippet.author || snippet.createdBy?.username || 'Unknown'
     const createdBy = snippet.createdBy?.username || 'Unknown'
     const tags = snippet.tags?.map((tag: any) => tag.name) || []
-    
+
     const descriptionParts = [`By ${author}.`]
     if (snippet.description) {
       descriptionParts.push(snippet.description)

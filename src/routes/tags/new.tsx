@@ -13,6 +13,14 @@ const tagNewSearchSchema = z.object({
 
 export const Route = createFileRoute('/tags/new')({
   validateSearch: tagNewSearchSchema,
+  head: () => {
+    return {
+      meta: [
+        { name: 'robots', content: 'noindex, nofollow' },
+        { title: 'Create New Tag - Snippyst' },
+      ],
+    }
+  },
   component: RouteComponent,
 })
 

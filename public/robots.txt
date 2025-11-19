@@ -1,9 +1,16 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
 Allow: /
-Disallow: /moderation
-Disallow: /moderation/*
+Allow: /snippets$
+
 Disallow: /snippets?*
 Disallow: /snippets/*?*
+
+Disallow: /moderation/
+Disallow: /auth/
+
+Disallow: /snippets/*/edit
+
+Sitemap: https://snippyst.com/sitemap_index.xml
 Sitemap: https://snippyst.com/sitemap.xml
 Sitemap: https://snippyst.com/sitemap_snippets.xml

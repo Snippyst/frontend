@@ -26,6 +26,14 @@ const snippetNewSearchSchema = z.object({
 
 export const Route = createFileRoute('/snippets/new')({
   validateSearch: snippetNewSearchSchema,
+  head: () => {
+    return {
+      meta: [
+        { name: 'robots', content: 'noindex, nofollow' },
+        { title: 'Create New Snippet - Snippyst' },
+      ],
+    }
+  },
   component: RouteComponent,
 })
 
