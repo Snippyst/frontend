@@ -6,6 +6,7 @@ import TagComp from '@/components/snippet/TagComp'
 import { Container } from '@/components/ui/Container'
 import { getRandomSnippet } from '@/lib/api/snippets'
 import { Button } from '@/components/ui/Button'
+import { generateSEOMeta } from '@/components/SEO'
 
 export const Route = createFileRoute('/')({
   loader: async ({ context }) => {
@@ -14,6 +15,15 @@ export const Route = createFileRoute('/')({
       queryFn: () => getTags({ page: 1, perPage: 100 }),
     })
   },
+  head: () => ({
+    meta: generateSEOMeta({
+      title: 'Snippyst - Typst Snippet Sharing Platform',
+      description:
+        'Discover, share, and explore Typst code snippets. Find ready-to-use code for your next document or contribute your own creations to the community.',
+      url: 'https://snippyst.com/',
+      type: 'website',
+    }),
+  }),
   component: App,
 })
 
@@ -43,8 +53,9 @@ function App() {
               Welcome to Snippyst
             </h1>
             <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">
-              Discover, share, and explore Typst snippets created by the community.
-              Find ready-to-use code for your next document or contribute your own creations.
+              Discover, share, and explore Typst snippets created by the
+              community. Find ready-to-use code for your next document or
+              contribute your own creations.
             </p>
             <div className="flex flex-wrap gap-4 items-stretch">
               <Link

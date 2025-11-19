@@ -12,7 +12,7 @@ import SnippetCode from '@/components/snippet/show/SnippetCode'
 import ViewModeToggle from '@/components/snippet/show/ViewModeToggle'
 import DeleteButton from '@/components/snippet/DeleteButton'
 import { Comments } from '@/components/snippet/Comments'
-import { generateSEOMeta } from '@/components/SEO'
+import { generateSEOMeta, generateStructuredData } from '@/components/SEO'
 
 export const Route = createFileRoute('/snippets/$id')({
   loader: async ({ context, params }) => {
@@ -36,25 +36,56 @@ export const Route = createFileRoute('/snippets/$id')({
           title: 'Snippet - Snippyst',
           description:
             'View Typst snippets on Snippyst. Share, create, and explore typst snippets!',
-          // TODO Better placeholder image
-          // image: 'https://snippyst.com/og-image.png',
           url: `https://snippyst.com/snippets/${params.id}`,
         }),
       }
     }
 
     const author = snippet.author || snippet.createdBy?.username || 'Unknown'
-    const description = snippet.description
-      ? `By ${author}. ${snippet.description} - Typst Snippets. ${snippet.tags && snippet.tags.length > 0 ? 'Tags: ' + snippet.tags.map((tag: any) => tag.name).join(', ') + '.' : ''}`
-      : `By ${author}. A Typst snippet on Snippyst. ${snippet.tags && snippet.tags.length > 0 ? 'Tags: ' + snippet.tags.map((tag: any) => tag.name).join(', ') + '.' : ''}`
+    const createdBy = snippet.createdBy?.username || 'Unknown'
+    const tags = snippet.tags?.map((tag: any) => tag.name) || []
+    
+    const descriptionParts = [`By ${author}.`]
+    if (snippet.description) {
+      descriptionParts.push(snippet.description)
+    }
+    descriptionParts.push('Typst Snippets.')
+    if (tags.length > 0) {
+      descriptionParts.push(`Tags: ${tags.join(', ')}.`)
+    }
+    const description = descriptionParts.join(' ')
+
+    const structuredData = generateStructuredData({
+      id: snippet.id,
+      title: snippet.title,
+      description: snippet.description,
+      image: snippet.image,
+      author: snippet.author || undefined,
+      createdBy,
+      createdAt: snippet.createdAt,
+      updatedAt: snippet.lastUpdatedAt,
+      tags: snippet.tags,
+      code: snippet.code,
+    })
 
     return {
       meta: generateSEOMeta({
         title: `${snippet.title} - Snippyst`,
         description,
-        image: snippet.image + '/preview',
+        image: snippet.image ? `${snippet.image}/preview` : undefined,
         url: `https://snippyst.com/snippets/${params.id}`,
+        type: 'article',
+        author,
+        tags,
+        datePublished: snippet.createdAt,
+        dateModified: snippet.lastUpdatedAt || snippet.createdAt,
       }),
+      scripts: [
+        {
+          type: 'application/ld+json',
+          children: structuredData.children,
+        },
+      ],
     }
   },
   component: RouteComponent,

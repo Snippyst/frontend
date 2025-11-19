@@ -19,6 +19,7 @@ import {
   tokensToSearchParams,
   searchParamsToTokens,
 } from '@/lib/search-utils'
+import { generateSEOMeta } from '@/components/SEO'
 
 const snippetsSearchSchema = z.object({
   tags: z.array(z.string()).optional().default([]),
@@ -35,6 +36,17 @@ const snippetsSearchSchema = z.object({
 
 export const Route = createFileRoute('/snippets/')({
   validateSearch: snippetsSearchSchema,
+  head: () => {
+    return {
+      meta: generateSEOMeta({
+        title: 'Browse Snippets - Snippyst',
+        description:
+          'Browse all Typst code snippets shared by the community. Find reusable code for your next document.',
+        url: 'https://snippyst.com/snippets',
+        type: 'website',
+      }),
+    }
+  },
   component: RouteComponent,
 })
 

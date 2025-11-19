@@ -39,18 +39,25 @@ ${snippets
     const loc = `${baseUrl}/snippets/${snippet.id}`
     const lastmod = snippet.lastUpdatedAt.split('T')[0]
     const changefreq = 'monthly'
+    const priority = '0.8'
     const svgImage = snippet.image
     const previewImage = `${snippet.image}/preview`
+    const title = snippet.title || 'Untitled Snippet'
+    const description = snippet.description || `A Typst snippet`
 
     return `  <url>
     <loc>${loc}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>${changefreq}</changefreq>
-    <image:image>
-      <image:loc>${svgImage}</image:loc>
-    </image:image>
+    <priority>${priority}</priority>
     <image:image>
       <image:loc>${previewImage}</image:loc>
+      <image:title>${escapeXml(title)}</image:title>
+      <image:caption>${escapeXml(description)}</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>${svgImage}</image:loc>
+      <image:title>${escapeXml(title)} - SVG Source</image:title>
     </image:image>
   </url>`
   })
@@ -75,3 +82,12 @@ ${snippets
     },
   },
 })
+
+function escapeXml(unsafe: string): string {
+  return unsafe
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;')
+}

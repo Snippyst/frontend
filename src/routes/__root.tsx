@@ -26,7 +26,12 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'Snippyst',
+        title: 'Snippyst - Typst Snippet Sharing Platform',
+      },
+      {
+        name: 'description',
+        content:
+          'Share, discover, and explore Typst code snippets. A community-driven platform for Typst developers to share reusable code.',
       },
     ],
     links: [
