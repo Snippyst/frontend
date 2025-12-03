@@ -126,6 +126,24 @@ export default function Footer() {
                   Terms of Service
                 </Link>
               </li>
+              <li>
+                <a
+                  href="/sitemap.xml"
+                  target="_blank"
+                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                >
+                  Sitemap
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/sitemap_snippets.xml"
+                  target="_blank"
+                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                >
+                  Snippets Sitemap
+                </a>
+              </li>
             </ul>
           </div>
         </div>
