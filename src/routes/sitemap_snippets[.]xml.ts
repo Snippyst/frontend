@@ -42,8 +42,6 @@ ${snippets
     const priority = '0.8'
     const svgImage = snippet.image
     const previewImage = `${snippet.image}/preview`
-    const title = snippet.title || 'Untitled Snippet'
-    const description = snippet.description || `A Typst snippet`
 
     return `  <url>
     <loc>${loc}</loc>
@@ -52,12 +50,9 @@ ${snippets
     <priority>${priority}</priority>
     <image:image>
       <image:loc>${previewImage}</image:loc>
-      <image:title>${escapeXml(title)}</image:title>
-      <image:caption>${escapeXml(description)}</image:caption>
     </image:image>
     <image:image>
       <image:loc>${svgImage}</image:loc>
-      <image:title>${escapeXml(title)} - SVG Source</image:title>
     </image:image>
   </url>`
   })

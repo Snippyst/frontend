@@ -45,15 +45,12 @@ export const Route = createFileRoute('/snippets/$id')({
     const createdBy = snippet.createdBy?.username || 'Unknown'
     const tags = snippet.tags?.map((tag: any) => tag.name) || []
 
-    const descriptionParts = [`By ${author}.`]
+    const descriptionParts = [`By ${author}`]
     if (snippet.description) {
       descriptionParts.push(snippet.description)
     }
-    descriptionParts.push('Typst Snippets.')
-    if (tags.length > 0) {
-      descriptionParts.push(`Tags: ${tags.join(', ')}.`)
-    }
-    const description = descriptionParts.join(' ')
+    descriptionParts.push('A Typst snippet')
+    const description = descriptionParts.join(' - ')
 
     const structuredData = generateStructuredData({
       id: snippet.id,
@@ -64,7 +61,6 @@ export const Route = createFileRoute('/snippets/$id')({
       createdBy,
       createdAt: snippet.createdAt,
       updatedAt: snippet.lastUpdatedAt,
-      tags: snippet.tags,
       code: snippet.code,
     })
 

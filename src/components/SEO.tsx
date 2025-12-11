@@ -36,12 +36,6 @@ export function generateSEOMeta({
     { name: 'twitter:title', content: title },
     { name: 'twitter:description', content: description },
     { name: 'twitter:url', content: url },
-    {
-      name: 'keywords',
-      content: tags?.length
-        ? `Typst, Snippyst, Snippets, ${tags.join(', ')}`
-        : 'Typst, Snippyst, Snippets, Sharing',
-    },
   ]
 
   if (noindex) {
@@ -91,7 +85,6 @@ export function generateStructuredData(snippet: {
   createdBy?: string
   createdAt: string
   updatedAt?: string
-  tags?: Array<{ name: string }>
   code?: string
 }) {
   const baseUrl = 'https://snippyst.com'
@@ -102,9 +95,7 @@ export function generateStructuredData(snippet: {
     '@context': 'https://schema.org',
     '@type': 'Code',
     name: snippet.title,
-    description:
-      snippet.description ||
-      `A Typst snippet: ${snippet.title}${snippet.tags?.length ? `. Tags: ${snippet.tags.map((t) => t.name).join(', ')}` : ''}`,
+    description: snippet.description || `A Typst snippet`,
     url: snippetUrl,
     datePublished: snippet.createdAt,
     dateModified: snippet.updatedAt || snippet.createdAt,
@@ -123,9 +114,6 @@ export function generateStructuredData(snippet: {
     },
     ...(snippet.code && { codeValue: snippet.code }),
     ...(imageUrl && { image: imageUrl }),
-    ...(snippet.tags?.length && {
-      keywords: snippet.tags.map((t) => t.name).join(', '),
-    }),
   }
 
   const imageData = imageUrl
