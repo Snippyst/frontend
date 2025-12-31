@@ -12,7 +12,7 @@ import { getSearchSuggestions } from '../../lib/api/snippets'
 import { buildSnippetsParams } from '../../lib/search-utils'
 import { useDebounce } from '../../hooks/useDebounce'
 
-const AVAILABLE_VERSIONS = ['0.12.0', '0.13.0', '0.13.1', '0.14.0', '0.14.1']
+const AVAILABLE_VERSIONS = ['0.12.0', '0.13.0', '0.13.1', '0.14.0', '0.14.1', '0.14.2']
 
 interface SearchInputProps {
   tokens: SearchToken[]

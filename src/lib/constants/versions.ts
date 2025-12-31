@@ -1,4 +1,5 @@
 export const AVAILABLE_TYPST_VERSIONS = [
+  '0.14.2',
   '0.14.1',
   '0.14.0',
   '0.13.1',
