@@ -9,44 +9,29 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TosRouteImport } from './routes/tos'
-import { Route as Sitemap_snippetsDotxmlRouteImport } from './routes/sitemap_snippets[.]xml'
-import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as SnippetsIndexRouteImport } from './routes/snippets/index'
-import { Route as ModerationIndexRouteImport } from './routes/moderation/index'
-import { Route as TagsNewRouteImport } from './routes/tags/new'
-import { Route as SnippetsNewRouteImport } from './routes/snippets/new'
-import { Route as SnippetsIdRouteImport } from './routes/snippets/$id'
-import { Route as ModerationUsersRouteImport } from './routes/moderation/users'
-import { Route as ModerationTagsRouteImport } from './routes/moderation/tags'
-import { Route as ModerationSnippetsRouteImport } from './routes/moderation/snippets'
-import { Route as ModerationCommentsRouteImport } from './routes/moderation/comments'
-import { Route as AuthMeRouteImport } from './routes/auth/me'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as Sitemap_snippetsDotxmlRouteImport } from './routes/sitemap_snippets[.]xml'
+import { Route as TosRouteImport } from './routes/tos'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
-import { Route as SnippetsIdEditRouteImport } from './routes/snippets/$id_.edit'
+import { Route as AuthMeRouteImport } from './routes/auth/me'
+import { Route as ModerationIndexRouteImport } from './routes/moderation/index'
+import { Route as ModerationCommentsRouteImport } from './routes/moderation/comments'
+import { Route as ModerationSnippetsRouteImport } from './routes/moderation/snippets'
+import { Route as ModerationTagsRouteImport } from './routes/moderation/tags'
+import { Route as ModerationUsersRouteImport } from './routes/moderation/users'
+import { Route as SnippetsIndexRouteImport } from './routes/snippets/index'
+import { Route as SnippetsIdRouteImport } from './routes/snippets/$id'
+import { Route as SnippetsNewRouteImport } from './routes/snippets/new'
+import { Route as TagsNewRouteImport } from './routes/tags/new'
 import { Route as AuthProviderCallbackRouteImport } from './routes/auth/$provider/callback'
+import { Route as SnippetsIdEditRouteImport } from './routes/snippets/$id_.edit'
 
-const TosRoute = TosRouteImport.update({
-  id: '/tos',
-  path: '/tos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const Sitemap_snippetsDotxmlRoute = Sitemap_snippetsDotxmlRouteImport.update({
-  id: '/sitemap_snippets.xml',
-  path: '/sitemap_snippets.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivacyRoute = PrivacyRouteImport.update({
-  id: '/privacy',
-  path: '/privacy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -54,59 +39,24 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SnippetsIndexRoute = SnippetsIndexRouteImport.update({
-  id: '/snippets/',
-  path: '/snippets/',
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ModerationIndexRoute = ModerationIndexRouteImport.update({
-  id: '/moderation/',
-  path: '/moderation/',
+const Sitemap_snippetsDotxmlRoute = Sitemap_snippetsDotxmlRouteImport.update({
+  id: '/sitemap_snippets.xml',
+  path: '/sitemap_snippets.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TagsNewRoute = TagsNewRouteImport.update({
-  id: '/tags/new',
-  path: '/tags/new',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SnippetsNewRoute = SnippetsNewRouteImport.update({
-  id: '/snippets/new',
-  path: '/snippets/new',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SnippetsIdRoute = SnippetsIdRouteImport.update({
-  id: '/snippets/$id',
-  path: '/snippets/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ModerationUsersRoute = ModerationUsersRouteImport.update({
-  id: '/moderation/users',
-  path: '/moderation/users',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ModerationTagsRoute = ModerationTagsRouteImport.update({
-  id: '/moderation/tags',
-  path: '/moderation/tags',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ModerationSnippetsRoute = ModerationSnippetsRouteImport.update({
-  id: '/moderation/snippets',
-  path: '/moderation/snippets',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ModerationCommentsRoute = ModerationCommentsRouteImport.update({
-  id: '/moderation/comments',
-  path: '/moderation/comments',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthMeRoute = AuthMeRouteImport.update({
-  id: '/auth/me',
-  path: '/auth/me',
+const TosRoute = TosRouteImport.update({
+  id: '/tos',
+  path: '/tos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthLoginRoute = AuthLoginRouteImport.update({
@@ -114,14 +64,64 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: '/auth/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SnippetsIdEditRoute = SnippetsIdEditRouteImport.update({
-  id: '/snippets/$id_/edit',
-  path: '/snippets/$id/edit',
+const AuthMeRoute = AuthMeRouteImport.update({
+  id: '/auth/me',
+  path: '/auth/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModerationIndexRoute = ModerationIndexRouteImport.update({
+  id: '/moderation/',
+  path: '/moderation/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModerationCommentsRoute = ModerationCommentsRouteImport.update({
+  id: '/moderation/comments',
+  path: '/moderation/comments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModerationSnippetsRoute = ModerationSnippetsRouteImport.update({
+  id: '/moderation/snippets',
+  path: '/moderation/snippets',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModerationTagsRoute = ModerationTagsRouteImport.update({
+  id: '/moderation/tags',
+  path: '/moderation/tags',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModerationUsersRoute = ModerationUsersRouteImport.update({
+  id: '/moderation/users',
+  path: '/moderation/users',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SnippetsIndexRoute = SnippetsIndexRouteImport.update({
+  id: '/snippets/',
+  path: '/snippets/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SnippetsIdRoute = SnippetsIdRouteImport.update({
+  id: '/snippets/$id',
+  path: '/snippets/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SnippetsNewRoute = SnippetsNewRouteImport.update({
+  id: '/snippets/new',
+  path: '/snippets/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TagsNewRoute = TagsNewRouteImport.update({
+  id: '/tags/new',
+  path: '/tags/new',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthProviderCallbackRoute = AuthProviderCallbackRouteImport.update({
   id: '/auth/$provider/callback',
   path: '/auth/$provider/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SnippetsIdEditRoute = SnippetsIdEditRouteImport.update({
+  id: '/snippets/$id_/edit',
+  path: '/snippets/$id/edit',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -141,8 +141,8 @@ export interface FileRoutesByFullPath {
   '/snippets/$id': typeof SnippetsIdRoute
   '/snippets/new': typeof SnippetsNewRoute
   '/tags/new': typeof TagsNewRoute
-  '/moderation': typeof ModerationIndexRoute
-  '/snippets': typeof SnippetsIndexRoute
+  '/moderation/': typeof ModerationIndexRoute
+  '/snippets/': typeof SnippetsIndexRoute
   '/auth/$provider/callback': typeof AuthProviderCallbackRoute
   '/snippets/$id/edit': typeof SnippetsIdEditRoute
 }
@@ -207,8 +207,8 @@ export interface FileRouteTypes {
     | '/snippets/$id'
     | '/snippets/new'
     | '/tags/new'
-    | '/moderation'
-    | '/snippets'
+    | '/moderation/'
+    | '/snippets/'
     | '/auth/$provider/callback'
     | '/snippets/$id/edit'
   fileRoutesByTo: FileRoutesByTo
@@ -279,32 +279,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/tos': {
-      id: '/tos'
-      path: '/tos'
-      fullPath: '/tos'
-      preLoaderRoute: typeof TosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap_snippets.xml': {
-      id: '/sitemap_snippets.xml'
-      path: '/sitemap_snippets.xml'
-      fullPath: '/sitemap_snippets.xml'
-      preLoaderRoute: typeof Sitemap_snippetsDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacy': {
-      id: '/privacy'
-      path: '/privacy'
-      fullPath: '/privacy'
-      preLoaderRoute: typeof PrivacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -314,81 +293,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/snippets/': {
-      id: '/snippets/'
-      path: '/snippets'
-      fullPath: '/snippets'
-      preLoaderRoute: typeof SnippetsIndexRouteImport
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/moderation/': {
-      id: '/moderation/'
-      path: '/moderation'
-      fullPath: '/moderation'
-      preLoaderRoute: typeof ModerationIndexRouteImport
+    '/sitemap_snippets.xml': {
+      id: '/sitemap_snippets.xml'
+      path: '/sitemap_snippets.xml'
+      fullPath: '/sitemap_snippets.xml'
+      preLoaderRoute: typeof Sitemap_snippetsDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/tags/new': {
-      id: '/tags/new'
-      path: '/tags/new'
-      fullPath: '/tags/new'
-      preLoaderRoute: typeof TagsNewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/snippets/new': {
-      id: '/snippets/new'
-      path: '/snippets/new'
-      fullPath: '/snippets/new'
-      preLoaderRoute: typeof SnippetsNewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/snippets/$id': {
-      id: '/snippets/$id'
-      path: '/snippets/$id'
-      fullPath: '/snippets/$id'
-      preLoaderRoute: typeof SnippetsIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/moderation/users': {
-      id: '/moderation/users'
-      path: '/moderation/users'
-      fullPath: '/moderation/users'
-      preLoaderRoute: typeof ModerationUsersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/moderation/tags': {
-      id: '/moderation/tags'
-      path: '/moderation/tags'
-      fullPath: '/moderation/tags'
-      preLoaderRoute: typeof ModerationTagsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/moderation/snippets': {
-      id: '/moderation/snippets'
-      path: '/moderation/snippets'
-      fullPath: '/moderation/snippets'
-      preLoaderRoute: typeof ModerationSnippetsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/moderation/comments': {
-      id: '/moderation/comments'
-      path: '/moderation/comments'
-      fullPath: '/moderation/comments'
-      preLoaderRoute: typeof ModerationCommentsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth/me': {
-      id: '/auth/me'
-      path: '/auth/me'
-      fullPath: '/auth/me'
-      preLoaderRoute: typeof AuthMeRouteImport
+    '/tos': {
+      id: '/tos'
+      path: '/tos'
+      fullPath: '/tos'
+      preLoaderRoute: typeof TosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/login': {
@@ -398,11 +328,74 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/snippets/$id_/edit': {
-      id: '/snippets/$id_/edit'
-      path: '/snippets/$id/edit'
-      fullPath: '/snippets/$id/edit'
-      preLoaderRoute: typeof SnippetsIdEditRouteImport
+    '/auth/me': {
+      id: '/auth/me'
+      path: '/auth/me'
+      fullPath: '/auth/me'
+      preLoaderRoute: typeof AuthMeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/moderation/': {
+      id: '/moderation/'
+      path: '/moderation'
+      fullPath: '/moderation/'
+      preLoaderRoute: typeof ModerationIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/moderation/comments': {
+      id: '/moderation/comments'
+      path: '/moderation/comments'
+      fullPath: '/moderation/comments'
+      preLoaderRoute: typeof ModerationCommentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/moderation/snippets': {
+      id: '/moderation/snippets'
+      path: '/moderation/snippets'
+      fullPath: '/moderation/snippets'
+      preLoaderRoute: typeof ModerationSnippetsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/moderation/tags': {
+      id: '/moderation/tags'
+      path: '/moderation/tags'
+      fullPath: '/moderation/tags'
+      preLoaderRoute: typeof ModerationTagsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/moderation/users': {
+      id: '/moderation/users'
+      path: '/moderation/users'
+      fullPath: '/moderation/users'
+      preLoaderRoute: typeof ModerationUsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/snippets/': {
+      id: '/snippets/'
+      path: '/snippets'
+      fullPath: '/snippets/'
+      preLoaderRoute: typeof SnippetsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/snippets/$id': {
+      id: '/snippets/$id'
+      path: '/snippets/$id'
+      fullPath: '/snippets/$id'
+      preLoaderRoute: typeof SnippetsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/snippets/new': {
+      id: '/snippets/new'
+      path: '/snippets/new'
+      fullPath: '/snippets/new'
+      preLoaderRoute: typeof SnippetsNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tags/new': {
+      id: '/tags/new'
+      path: '/tags/new'
+      fullPath: '/tags/new'
+      preLoaderRoute: typeof TagsNewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/$provider/callback': {
@@ -410,6 +403,13 @@ declare module '@tanstack/react-router' {
       path: '/auth/$provider/callback'
       fullPath: '/auth/$provider/callback'
       preLoaderRoute: typeof AuthProviderCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/snippets/$id_/edit': {
+      id: '/snippets/$id_/edit'
+      path: '/snippets/$id/edit'
+      fullPath: '/snippets/$id/edit'
+      preLoaderRoute: typeof SnippetsIdEditRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
